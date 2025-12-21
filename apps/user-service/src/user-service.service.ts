@@ -31,6 +31,9 @@ export class UserServiceService {
   async getUserById(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
+      include: {
+        avatar: true,
+      },
     });
   }
 }

@@ -19,30 +19,52 @@ model User {
   email       String   @unique
   username    String   @unique
   displayName String?
-  avatar      String?
-  banner      String?
   bio         String?
   isPrivate   Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  avatarId String? @unique
+  avatar   Avatar? @relation(fields: [avatarId], references: [id])
+  bannerId String? @unique
+  banner   Banner? @relation(fields: [bannerId], references: [id])
+
+  settings UserSettings?
+}
+
+model Avatar {
+  id     String @id @default(cuid())
+  url    String
+  fileId String @unique
+  user   User?
+}
+
+model Banner {
+  id     String @id @default(cuid())
+  url    String
+  fileId String @unique
+  user   User?
 }
 
 model UserSettings {
   id       String  @id @default(cuid())
   userId   String  @unique
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   darkMode Boolean @default(false)
   allowDMs Boolean @default(true)
 }
 
 model UserBlock {
-  id        String   @id @default(cuid())
   blockerId String
   blockedId String
   createdAt DateTime @default(now())
+
+  @@id([blockerId, blockedId])
 }
 
 model UserMute {
-  id        String   @id @default(cuid())
   muterId   String
   mutedId   String
   createdAt DateTime @default(now())
+
+  @@id([muterId, mutedId])
 }

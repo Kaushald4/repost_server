@@ -18,7 +18,7 @@ export class UserServiceController {
       id: user.id,
       username: user.username,
       displayName: user.displayName || '',
-      avatar: user.avatar || '',
+      avatar: user.avatar?.url || '',
       bio: user.bio || '',
       email: user.email,
     };
