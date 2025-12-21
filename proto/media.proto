@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package media;
+
+service MediaService {
+  rpc UploadFile (UploadFileRequest) returns (UploadFileResponse);
+}
+
+message UploadFileRequest {
+  bytes file = 1;
+  string filename = 2;
+  string mimetype = 3;
+  string folder = 4; // Optional: to organize uploads (e.g., "avatars", "communities")
+}
+
+message UploadFileResponse {
+  string url = 1;
+  string publicId = 2;
+  bool success = 3;
+  string message = 4;
+}

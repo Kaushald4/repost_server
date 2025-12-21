@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  title       String
+  description String?
+  icon        String?
+  banner      String?
+  createdAt   DateTime @default(now())
+
+  members    CommunityMember[]
+  moderators CommunityModerator[]
+  rules      CommunityRule[]
+  followers  CommunityFollow[]
+}
+
+model CommunityMember {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  userId      String
+  joinedAt    DateTime  @default(now())
+
+  @@unique([communityId, userId])
+}
+
+model CommunityModerator {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  userId      String
+  role        String    @default("MODERATOR") // e.g., "OWNER", "MODERATOR"
+
+  @@unique([communityId, userId])
+}
+
+model CommunityRule {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  text        String
+}
+
+model CommunityFollow {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+  userId      String
+  createdAt   DateTime  @default(now())
+
+  @@unique([communityId, userId])
+}
