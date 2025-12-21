@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { RepostApigatewayController } from './repost-apigateway.controller';
 import { RepostApigatewayService } from './repost-apigateway.service';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { UserServiceModule } from './user-service/user-service.module';
+import { AuthenticationProxyModule } from './authentication/auth-proxy.module';
+import { UserProxyModule } from './user-service/user-service.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule, AuthGuard } from '@app/common';
 import { LoggerModule } from 'nestjs-pino';
-import { CommunityServiceModule } from './community-service/community-service.module';
-import { MediaModule } from './media/media.module';
+import { CommunityProxyModule } from './community/community-proxy.module';
+import { MediaProxyModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -31,11 +31,11 @@ import { MediaModule } from './media/media.module';
       isGlobal: true,
       envFilePath: 'apps/repost-apigateway/.env',
     }),
-    AuthenticationModule,
-    UserServiceModule,
+    AuthenticationProxyModule,
+    UserProxyModule,
     RedisModule,
-    CommunityServiceModule,
-    MediaModule,
+    CommunityProxyModule,
+    MediaProxyModule,
   ],
   controllers: [RepostApigatewayController],
   providers: [

@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { UserServiceController } from './user-service.controller';
-import { UserServiceService } from './user-service.service';
+import { UserProxyController } from './user-service.controller';
 
 @Module({
   imports: [
@@ -12,13 +11,12 @@ import { UserServiceService } from './user-service.service';
         transport: Transport.GRPC,
         options: {
           package: 'user',
-          protoPath: join(process.cwd(), 'proto/user.proto'),
-          url: '0.0.0.0:8976', // Assuming port 50052 for user-service, need to verify
+          protoPath: join(process.cwd(), 'proto/user/v1/user.proto'),
+          url: '0.0.0.0:8976',
         },
       },
     ]),
   ],
-  controllers: [UserServiceController],
-  providers: [UserServiceService],
+  controllers: [UserProxyController],
 })
-export class UserServiceModule {}
+export class UserProxyModule {}

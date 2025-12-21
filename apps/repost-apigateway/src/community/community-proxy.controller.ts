@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
 @Controller('community-service')
-export class CommunityServiceController {}
+export class CommunityProxyController {}

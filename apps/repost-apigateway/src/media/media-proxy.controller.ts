@@ -26,7 +26,7 @@ interface MediaService {
 }
 
 @Controller('media')
-export class MediaController implements OnModuleInit {
+export class MediaProxyController implements OnModuleInit {
   private mediaService: MediaService;
 
   constructor(@Inject('MEDIA_SERVICE') private client: ClientGrpc) {}

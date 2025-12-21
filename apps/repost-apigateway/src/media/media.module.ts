@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { MediaController } from './media.controller';
+import { MediaProxyController } from './media-proxy.controller';
 
 @Module({
   imports: [
@@ -11,12 +11,12 @@ import { MediaController } from './media.controller';
         transport: Transport.GRPC,
         options: {
           package: 'media',
-          protoPath: join(process.cwd(), 'proto/media.proto'),
+          protoPath: join(process.cwd(), 'proto/media/v1/media.proto'),
           url: '0.0.0.0:50053',
         },
       },
     ]),
   ],
-  controllers: [MediaController],
+  controllers: [MediaProxyController],
 })
-export class MediaModule {}
+export class MediaProxyModule {}

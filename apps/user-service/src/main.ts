@@ -13,7 +13,7 @@ async function bootstrap() {
       transport: Transport.GRPC,
       options: {
         package: 'user',
-        protoPath: join(process.cwd(), 'proto/user.proto'),
+        protoPath: join(process.cwd(), 'proto/user/v1/user.proto'),
         url: '0.0.0.0:8976',
       },
       bufferLogs: true,

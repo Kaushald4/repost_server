@@ -18,7 +18,7 @@ import {
   ValidateResponse,
   RefreshRequest,
   RefreshResponse,
-} from './auth.dto';
+} from '@app/dto';
 
 interface JwtPayload {
   sub: string;

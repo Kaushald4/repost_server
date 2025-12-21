@@ -10,7 +10,7 @@ import {
   ValidateResponse,
   RefreshRequest,
   RefreshResponse,
-} from './auth.dto';
+} from '@app/dto';
 
 @Controller()
 export class AuthServiceController {

@@ -13,7 +13,7 @@ async function bootstrap() {
       transport: Transport.GRPC,
       options: {
         package: 'media',
-        protoPath: join(process.cwd(), 'proto/media.proto'),
+        protoPath: join(process.cwd(), 'proto/media/v1/media.proto'),
         url: '0.0.0.0:50053',
       },
     },

@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { UserServiceService } from './user-service.service';
-import type { GetUserByIdRequest, UserResponse } from './user.dto';
+import type { GetUserByIdRequest, UserResponse } from '@app/dto';
 
 @Controller()
 export class UserServiceController {

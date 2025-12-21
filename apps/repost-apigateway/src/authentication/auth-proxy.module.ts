@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { AuthenticationController } from './authentication.controller';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationProxyController } from './auth-proxy.controller';
 
 @Module({
   imports: [
@@ -12,14 +11,13 @@ import { AuthenticationService } from './authentication.service';
         transport: Transport.GRPC,
         options: {
           package: 'auth',
-          protoPath: join(process.cwd(), 'proto/auth.proto'),
+          protoPath: join(process.cwd(), 'proto/auth/v1/auth.proto'),
           url: '0.0.0.0:50051',
         },
       },
     ]),
   ],
-  controllers: [AuthenticationController],
-  providers: [AuthenticationService],
-  exports: [ClientsModule, AuthenticationService],
+  controllers: [AuthenticationProxyController],
+  exports: [ClientsModule],
 })
-export class AuthenticationModule {}
+export class AuthenticationProxyModule {}
