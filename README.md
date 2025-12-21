@@ -1,98 +1,209 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Repost Server - Microservices Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A scalable, microservices-based backend for the Repost social media platform, built with NestJS.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tech Stack
 
-## Description
+- **Framework**: NestJS (Monorepo mode)
+- **Language**: TypeScript
+- **Database**: PostgreSQL
+- **ORM**: Prisma
+- **Microservices Communication**: gRPC
+- **API Gateway**: REST API (NestJS)
+- **Authentication**: JWT (Access & Refresh Tokens)
+- **Containerization**: Docker
+- **Package Manager**: npm
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📂 Project Structure
 
-## Project setup
+The project follows a monorepo structure using NestJS workspaces.
 
-```bash
-$ npm install
+```
+server/
+├── apps/
+│   ├── repost-apigateway/   # REST API Gateway (Entry point)
+│   ├── auth-service/        # Authentication & Identity
+│   ├── user-service/        # User Profiles & Management
+│   ├── community-service/   # Communities (Subreddits) logic
+│   ├── post-service/        # Posts management
+│   ├── comment-service/     # Comments & Threads
+│   ├── chat-service/        # Real-time Messaging
+│   ├── interaction-service/ # Votes, Saves, etc.
+│   ├── media-service/       # File Uploads & Processing
+│   └── notification-service/# User Notifications
+├── libs/
+│   ├── common/              # Shared decorators, guards, filters
+│   ├── dto/                 # Shared Data Transfer Objects
+│   ├── grpc/                # gRPC client options & configs
+│   └── utils/               # Helper functions
+├── proto/                   # gRPC Protocol Buffer definitions
+└── docker/                  # Docker configuration files
 ```
 
-## Compile and run the project
+## 🚦 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Docker & Docker Compose
+- PostgreSQL
+
+### Installation
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Set up environment variables:
+   Copy `.env.example` to `.env` in each service directory (`apps/*/`) and configure your database connections.
+
+3. Generate Prisma clients:
+   ```bash
+   npx prisma generate
+   ```
+
+### Running the Services
+
+You can run services individually or all together.
+
+**Run API Gateway:**
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev repost-apigateway
 ```
 
-## Run tests
+**Run a Microservice (e.g., Auth):**
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev auth-service
 ```
 
-## Deployment
+## ✅ Implementation Status
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 🔐 Authentication Service (`auth-service`)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- [x] User Registration (Email/Password)
+- [x] User Login
+- [x] JWT Token Generation (Access & Refresh)
+- [x] Token Validation
+- [x] Token Refresh
+- [ ] OAuth Integration (Google, Apple, GitHub)
+- [ ] Password Reset Flow
+- [ ] Email Verification
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+### 👤 User Service (`user-service`)
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- [x] Get User Profile by ID
+- [ ] Update User Profile (Bio, Avatar, Banner)
+- [ ] User Search
+- [ ] Follow/Unfollow Users
+- [ ] Block/Mute Users
+- [ ] Privacy Settings
+- [ ] Reputation/Karma System
 
-## Resources
+### 🏘️ Community Service (`community-service`)
 
-Check out a few resources that may come in handy when working with NestJS:
+- [ ] Create Community
+- [ ] Get Community Details
+- [ ] Join/Leave Community
+- [ ] List Communities (Discovery)
+- [ ] Update Community Settings (Rules, Banners, Icons)
+- [ ] Community Moderation Tools (Roles & Permissions)
+- [ ] Community Health Score
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 📝 Post Service (`post-service`)
 
-## Support
+- [ ] Create Post (Text, Image, Link, Polls)
+- [ ] Get Post by ID
+- [ ] Get Feed (Home, Community, User)
+- [ ] Edit Post
+- [ ] Delete Post
+- [ ] Post Filtering & Sorting
+- [ ] Anonymous Posting
+- [ ] Post Flairs & Tags
+- [ ] Post Views Counter
+- [ ] Post Drafts & Scheduling
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 💬 Comment Service (`comment-service`)
 
-## Stay in touch
+- [ ] Create Comment
+- [ ] Get Comments for Post (Nested/Threaded)
+- [ ] Edit Comment
+- [ ] Delete Comment
+- [ ] Reply to Comment (Quote/Reply)
+- [ ] AI Reply Suggestions (Integration)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### ❤️ Interaction Service (`interaction-service`)
 
-## License
+- [ ] Upvote/Downvote Post
+- [ ] Upvote/Downvote Comment
+- [ ] Save Post
+- [ ] Vote on Polls
+- [ ] Karma Calculation Logic
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 💬 Chat Service (`chat-service`)
+
+- [ ] 1-on-1 Messaging
+- [ ] Group Chats
+- [ ] Topic-based Live Chats
+- [ ] Temporary/Disappearing Chats
+- [ ] Real-time Socket.io / WebSocket Gateway
+- [ ] Message History
+- [ ] Mute/Block in Chat
+
+### 🔔 Notification Service (`notification-service`)
+
+- [ ] Create Notification (Replies, Mentions, Upvotes)
+- [ ] Get User Notifications
+- [ ] Mark as Read
+- [ ] Push Notifications
+- [ ] Community Announcements
+- [ ] Notification Settings
+
+### 🖼️ Media Service (`media-service`)
+
+- [ ] Image Upload (S3/Cloudinary)
+- [ ] Image Optimization/Resizing
+- [ ] Video Upload & Processing
+
+### 🌐 API Gateway (`repost-apigateway`)
+
+- [x] Auth Routes Proxy
+- [x] User Routes Proxy
+- [ ] Community Routes Proxy
+- [ ] Post Routes Proxy
+- [ ] Comment Routes Proxy
+- [ ] Interaction Routes Proxy
+- [ ] Unified Error Handling
+- [ ] Rate Limiting
+
+## 🔮 Planned Services & Features
+
+### 🔍 Search Service
+
+- [ ] Full-text Search (Posts, Communities, Users)
+- [ ] Trending Topics & Analytics
+- [ ] Advanced Filtering
+
+### 🤖 AI & Agents Service
+
+- [ ] Content Summarization (TL;DR)
+- [ ] Post Improvement & Title Suggestions
+- [ ] Feed Curation Agent
+- [ ] Research & Moderator Agents
+- [ ] Toxicity & Spam Detection
+
+### 🛡️ Moderation Service
+
+- [ ] Report Management System
+- [ ] Automated Moderation Actions
+- [ ] Moderator Logs & Dashboards
+
+### 🏆 Gamification & Analytics
+
+- [ ] User Levels & Progression
+- [ ] Badges & Achievements
+- [ ] Community Quests
+- [ ] Platform Analytics
