@@ -1,11 +1,19 @@
-import { Controller, Get, Inject, OnModuleInit } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  OnModuleInit,
+  Patch,
+} from '@nestjs/common';
 import { CurrentUser } from '@app/common';
 import { Observable } from 'rxjs';
-import { UserResponse } from '@app/dto';
+import type { UpdateUserRequest, UserResponse } from '@app/dto';
 import type { ClientGrpc } from '@nestjs/microservices';
 
 interface UserServiceClient {
   getUserById(data: { id: string }): Observable<UserResponse>;
+  updateUser(data: UpdateUserRequest): Observable<UserResponse>;
 }
 
 @Controller('user')
@@ -22,5 +30,13 @@ export class UserProxyController implements OnModuleInit {
     @CurrentUser() user: { userId: string },
   ): Observable<UserResponse> {
     return this.svc.getUserById({ id: user.userId });
+  }
+
+  @Patch('update-user')
+  updateUser(
+    @CurrentUser() user: { userId: string },
+    @Body() data: UpdateUserRequest,
+  ): Observable<UserResponse> {
+    return this.svc.updateUser({ ...data, id: user.userId });
   }
 }

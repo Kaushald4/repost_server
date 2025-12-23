@@ -23,12 +23,41 @@ model User {
   isPrivate   Boolean  @default(false)
   createdAt   DateTime @default(now())
 
+  karma Int @default(0)
+  level Int @default(1)
+
+  stats  UserStats?
+  badges UserBadge[]
+
   avatarId String? @unique
   avatar   Avatar? @relation(fields: [avatarId], references: [id])
   bannerId String? @unique
   banner   Banner? @relation(fields: [bannerId], references: [id])
 
   settings UserSettings?
+
+  isVerified Boolean @default(false)
+}
+
+model UserStats {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  helper   Int @default(0)
+  debate   Int @default(0)
+  creative Int @default(0)
+}
+
+model UserBadge {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  badgeName String // e.g., 'newbie', 'helpful'
+  earnedAt  DateTime @default(now())
+
+  @@unique([userId, badgeName])
 }
 
 model Avatar {

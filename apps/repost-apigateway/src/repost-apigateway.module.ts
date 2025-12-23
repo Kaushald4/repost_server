@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RepostApigatewayController } from './repost-apigateway.controller';
 import { RepostApigatewayService } from './repost-apigateway.service';
 import { AuthenticationProxyModule } from './authentication/auth-proxy.module';
-import { UserProxyModule } from './user-service/user-service.module';
+import { UserProxyModule } from './user-service/user-proxy.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule, AuthGuard } from '@app/common';
 import { LoggerModule } from 'nestjs-pino';

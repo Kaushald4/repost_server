@@ -1,7 +1,11 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { UserServiceService } from './user-service.service';
-import type { GetUserByIdRequest, UserResponse } from '@app/dto';
+import type {
+  GetUserByIdRequest,
+  UpdateUserRequest,
+  UserResponse,
+} from '@app/dto';
 
 @Controller()
 export class UserServiceController {
@@ -11,16 +15,35 @@ export class UserServiceController {
   async getUserById(data: GetUserByIdRequest): Promise<UserResponse> {
     const user = await this.userServiceService.getUserById(data.id);
     if (!user) {
-      // Handle not found, maybe throw RpcException
-      throw new Error('User not found');
+      throw new RpcException('User not found');
     }
     return {
       id: user.id,
       username: user.username,
       displayName: user.displayName || '',
-      avatar: user.avatar?.url || '',
+      avatar: user.avatar ?? { fileId: '', url: '' },
       bio: user.bio || '',
       email: user.email,
+      banner: user.banner ?? { fileId: '', url: '' },
+      isPrivate: user.isPrivate,
+    };
+  }
+
+  @GrpcMethod('UserService', 'UpdateUser')
+  async updateUser(data: UpdateUserRequest): Promise<UserResponse> {
+    const user = await this.userServiceService.updateUser(data);
+    if (!user) {
+      throw new RpcException('User not found');
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName || '',
+      avatar: user.avatar ?? { fileId: '', url: '' },
+      bio: user.bio || '',
+      email: user.email,
+      banner: user.banner ?? { fileId: '', url: '' },
+      isPrivate: user.isPrivate,
     };
   }
 }

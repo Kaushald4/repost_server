@@ -5,6 +5,7 @@ package user;
 service UserService {
   rpc GetUserById (GetUserByIdRequest) returns (UserResponse);
   rpc CreateUser (CreateUserRequest) returns (UserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
 }
 
 message GetUserByIdRequest {
@@ -16,11 +17,34 @@ message CreateUserRequest {
   string password = 2;
 }
 
+message UpdateUserRequest {
+  string id = 1;
+  optional string username = 2;
+  optional string displayName = 3;
+  optional Media avatar = 4;
+  optional Media banner = 5;
+  optional string bio = 6;
+  optional bool isPrivate = 7;
+  optional UserSettingsInput settings = 8;
+}
+
+message Media {
+  string url = 1;
+  string fileId = 2;
+}
+
+message UserSettingsInput {
+  optional bool darkMode = 1;
+  optional bool allowDMs = 2;
+}
+
 message UserResponse {
   string id = 1;
   string username = 2;
   string displayName = 3;
-  string avatar = 4;
+  Media avatar = 4;
   string bio = 5;
   string email = 6;
+  Media banner = 7;
+  bool isPrivate = 8;
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { UserProxyController } from './user-service.controller';
+import { UserProxyController } from './user-proxy.controller';
 
 @Module({
   imports: [
