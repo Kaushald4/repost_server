@@ -96,7 +96,7 @@ npm run start:dev auth-service
 ### 👤 User Service (`user-service`)
 
 - [x] Get User Profile by ID
-- [ ] Update User Profile (Bio, Avatar, Banner)
+- [x] Update User Profile (Bio, Avatar, Banner)
 - [ ] User Search
 - [ ] Follow/Unfollow Users
 - [ ] Block/Mute Users
