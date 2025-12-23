@@ -4,6 +4,7 @@ import {
   MinLength,
   IsNotEmpty,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class RegisterRequest {
@@ -16,7 +17,10 @@ export class RegisterRequest {
 }
 
 export class RegisterResponse {
+  @IsString({ message: 'id must be a string' })
   id: string;
+
+  @IsEmail({}, { message: 'email must be a valid email' })
   email: string;
 }
 
@@ -38,9 +42,16 @@ export class LoginRequest {
 }
 
 export class LoginResponse {
+  @IsString({ message: 'accessToken must be a string' })
   accessToken: string;
+
+  @IsString({ message: 'refreshToken must be a string' })
   refreshToken: string;
+
+  @IsString({ message: 'userId must be a string' })
   userId: string;
+
+  @IsString({ message: 'refreshTokenId must be a string' })
   refreshTokenId: string;
 }
 
@@ -51,7 +62,9 @@ export class ValidateRequest {
 }
 
 export class ValidateResponse {
+  @IsString({ message: 'userId must be a string' })
   userId: string;
+  @IsBoolean({ message: 'valid must be a boolean' })
   valid: boolean;
 }
 
@@ -66,6 +79,9 @@ export class RefreshRequest {
 }
 
 export class RefreshResponse {
+  @IsString({ message: 'accessToken must be a string' })
   accessToken: string;
+
+  @IsString({ message: 'refreshToken must be a string' })
   refreshToken: string;
 }
