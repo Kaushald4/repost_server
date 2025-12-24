@@ -88,7 +88,6 @@ export class AuthenticationProxyController implements OnModuleInit {
     return this.svc.validate(data);
   }
 
-  @Public()
   @Post('refresh')
   refresh(@Body() data: RefreshRequest) {
     return this.svc.refresh(data);

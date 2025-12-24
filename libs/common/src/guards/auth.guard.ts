@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 
 interface AuthenticatedRequest extends Request {
@@ -18,10 +19,22 @@ interface AuthenticatedRequest extends Request {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-    const hasAccessToken = typeof req.headers.authorization === 'string';
+    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
+    const hasAccessToken =
+      req.headers.authorization !== null || req.cookies?.access_token !== null;
 
     const hasRefreshToken = !!req.cookies?.refresh_token_id;
 

@@ -7,9 +7,11 @@ import {
   Inject,
   OnModuleInit,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import type { ClientGrpc } from '@nestjs/microservices';
 import type { Request, Response } from 'express';
 import { Observable, switchMap } from 'rxjs';
+import * as cookie from 'cookie';
 
 interface AuthService {
   refresh(data: { refreshTokenId: string }): Observable<{
@@ -38,7 +40,10 @@ export interface AuthenticatedRequest extends Request {
 export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
   private authService!: AuthService;
 
-  constructor(@Inject('AUTH_SERVICE') private client: ClientGrpc) {}
+  constructor(
+    @Inject('AUTH_SERVICE') private client: ClientGrpc,
+    private reflector: Reflector,
+  ) {}
 
   onModuleInit() {
     this.authService = this.client.getService<AuthService>('AuthService');
@@ -49,8 +54,25 @@ export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
     const req = http.getRequest<AuthenticatedRequest>();
     const res = http.getResponse<Response>();
 
-    const accessToken = req.headers.authorization?.split(' ')[1];
-    const refreshTokenId = req.cookies?.refresh_token_id;
+    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return next.handle();
+    }
+
+    const raw = req.headers.cookie as string;
+    const cookies = raw
+      ? (cookie.parse(raw) as AuthenticatedRequest['cookies'])
+      : {};
+
+    const accessToken =
+      req.headers.authorization?.split(' ')[1] ??
+      req.cookies?.access_token ??
+      cookies?.access_token;
+    const refreshTokenId =
+      req.cookies?.refresh_token_id ?? cookies?.refresh_token_id;
 
     /**
      * CASE 1: Access token exists → validate
@@ -58,6 +80,7 @@ export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
     if (accessToken) {
       return this.authService.validate({ token: accessToken }).pipe(
         switchMap((result) => {
+          console.log(result, 'RESULT');
           if (!result.valid) {
             throw new UnauthorizedException();
           }
@@ -74,7 +97,8 @@ export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
     if (!accessToken && refreshTokenId) {
       return this.authService.refresh({ refreshTokenId }).pipe(
         switchMap((refreshed) => {
-          // 1️⃣ Set cookies using refreshed tokens
+          console.log(refreshed, 'refreshednasjansjansjansjasnajsnjansjasnj');
+          // Set cookies using refreshed tokens
           res.cookie('access_token', refreshed.accessToken, {
             httpOnly: true,
             sameSite: 'lax',
