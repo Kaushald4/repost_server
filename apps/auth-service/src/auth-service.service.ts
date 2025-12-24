@@ -95,9 +95,21 @@ export class AuthServiceService {
       });
     }
 
+    const accessTokenExpiresIn = this.configService.get<string>(
+      'JWT_EXPIRATION_TIME',
+    )! as unknown as number;
+
+    const refreshTokenExpiresIn = this.configService.get<string>(
+      'REFRESH_TOKEN_EXPIRATION_TIME',
+    )! as unknown as number;
+
     const payload = { sub: user.id, email: user.email };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: 60 });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: Number(accessTokenExpiresIn),
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: Number(refreshTokenExpiresIn),
+    });
 
     // Clean up expired refresh tokens
     await this.prisma.refreshToken.deleteMany({
@@ -133,7 +145,7 @@ export class AuthServiceService {
       data: {
         authUserId: user.id,
         token: refreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        expiresAt: new Date(Date.now() + Number(refreshTokenExpiresIn) * 1000),
         ipAddress: data.ipAddress,
         userAgent: data.userAgent,
       },
