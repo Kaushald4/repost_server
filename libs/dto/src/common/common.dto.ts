@@ -1,11 +1,13 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class MediaDto {
-  @IsUrl({}, { message: 'Media.url must be a valid URL' })
-  url: string;
+  @IsString({ message: 'Media.url must be a valid URL' })
+  @IsOptional()
+  url: string | null;
 
   @IsString({ message: 'Media.fileId must be a string' })
-  fileId: string;
+  @IsOptional()
+  fileId: string | null;
 }
 
 export type TMedia = MediaDto;
