@@ -26,6 +26,23 @@ export class UserServiceController {
       email: user.email,
       banner: user.banner ?? { fileId: '', url: '' },
       isPrivate: user.isPrivate,
+      createdAt: user.createdAt.toISOString(),
+      karma: user.karma,
+      level: user.level,
+      stats: {
+        helper: user.stats?.helper || 0,
+        debate: user.stats?.debate || 0,
+        creative: user.stats?.creative || 0,
+      },
+      badges:
+        user.badges?.map((badge) => ({
+          badgeName: badge.badgeName,
+          earnedAt: badge.earnedAt.toISOString(),
+        })) || [],
+      settings: {
+        allowDMs: user.settings?.allowDMs ?? true,
+        darkMode: user.settings?.darkMode ?? false,
+      },
     };
   }
 
@@ -44,6 +61,13 @@ export class UserServiceController {
       email: user.email,
       banner: user.banner ?? { fileId: '', url: '' },
       isPrivate: user.isPrivate,
+      createdAt: user.createdAt.toISOString(),
+      karma: user.karma,
+      level: user.level,
+      settings: {
+        allowDMs: user.settings?.allowDMs ?? true,
+        darkMode: user.settings?.darkMode ?? false,
+      },
     };
   }
 }

@@ -36,6 +36,8 @@ export class UserServiceService {
         avatar: true,
         banner: true,
         settings: true,
+        stats: true,
+        badges: true,
       },
     });
   }

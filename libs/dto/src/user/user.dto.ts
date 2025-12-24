@@ -4,6 +4,7 @@ import {
   IsBoolean,
   ValidateNested,
   IsNotEmpty,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { MediaDto } from '../common/common.dto';
@@ -22,6 +23,25 @@ export class UserSettingsInput {
   @IsBoolean({ message: 'allowDMs must be a boolean' })
   @IsOptional()
   allowDMs?: boolean;
+}
+
+class UserStatsDto {
+  @IsNumber()
+  helper: number;
+
+  @IsNumber()
+  debate: number;
+
+  @IsNumber()
+  creative: number;
+}
+
+class UserBadgeDto {
+  @IsString()
+  badgeName: string;
+
+  @IsString()
+  earnedAt: string;
 }
 
 export class UpdateUserRequest {
@@ -90,4 +110,28 @@ export class UserResponse {
 
   @IsBoolean()
   isPrivate: boolean;
+
+  @IsNumber()
+  karma: number;
+
+  @IsNumber()
+  level: number;
+
+  @ValidateNested()
+  @Type(() => UserSettingsInput)
+  @IsOptional()
+  settings?: UserSettingsInput;
+
+  @ValidateNested()
+  @Type(() => UserStatsDto)
+  @IsOptional()
+  stats?: UserStatsDto;
+
+  @ValidateNested({ each: true })
+  @Type(() => UserBadgeDto)
+  @IsOptional()
+  badges?: UserBadgeDto[];
+
+  @IsString()
+  createdAt: string;
 }

@@ -38,6 +38,22 @@ message UserSettingsInput {
   optional bool allowDMs = 2;
 }
 
+message UserStats {
+  int32 helper = 1;
+  int32 debate = 2;
+  int32 creative = 3;
+}
+
+message UserBadge {
+  string badgeName = 1;
+  string earnedAt = 2;
+}
+
+message UserSettings {
+  bool darkMode = 1;
+  bool allowDMs = 2;
+}
+
 message UserResponse {
   string id = 1;
   string username = 2;
@@ -47,4 +63,11 @@ message UserResponse {
   string email = 6;
   Media banner = 7;
   bool isPrivate = 8;
+  string createdAt = 9;
+  int32 karma = 10;
+  int32 level = 11;
+  UserSettings settings = 12;
+  UserStats stats = 13;
+  repeated UserBadge badges = 14;
 }
+
