@@ -85,10 +85,7 @@ export class AuthenticationProxyController implements OnModuleInit {
       ...options,
       maxAge: Number(cookieExpirationTime) * 1000,
     });
-    res.cookie('refresh_token', response.refreshToken, {
-      ...options,
-      maxAge: Number(refreshCookieExpirationTime) * 1000,
-    });
+
     res.cookie('refresh_token_id', response.refreshTokenId, {
       ...options,
       maxAge: Number(refreshCookieExpirationTime) * 1000,
