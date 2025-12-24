@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RepostApigatewayController } from './repost-apigateway.controller';
 import { RepostApigatewayService } from './repost-apigateway.service';
 import { AuthenticationProxyModule } from './authentication/auth-proxy.module';
@@ -9,6 +9,7 @@ import { RedisModule, AuthGuard } from '@app/common';
 import { LoggerModule } from 'nestjs-pino';
 import { CommunityProxyModule } from './community/community-proxy.module';
 import { MediaProxyModule } from './media/media.module';
+import { RefreshInterceptor } from '@app/common';
 
 @Module({
   imports: [
@@ -43,6 +44,10 @@ import { MediaProxyModule } from './media/media.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RefreshInterceptor,
     },
   ],
 })

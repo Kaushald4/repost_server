@@ -1,84 +1,34 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
   UnauthorizedException,
-  OnModuleInit,
 } from '@nestjs/common';
-import type { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom, Observable } from 'rxjs';
-import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-
-interface ValidateResponse {
-  userId: string;
-  valid: boolean;
-}
-
-interface AuthService {
-  validate(data: { token: string }): Observable<ValidateResponse>;
-}
 
 interface AuthenticatedRequest extends Request {
   user?: {
     userId: string;
   };
+  cookies: {
+    refresh_token_id?: string;
+    access_token?: string;
+  };
 }
 
 @Injectable()
-export class AuthGuard implements CanActivate, OnModuleInit {
-  private authService!: AuthService;
+export class AuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-  constructor(
-    @Inject('AUTH_SERVICE') private client: ClientGrpc,
-    private reflector: Reflector,
-  ) {}
+    const hasAccessToken = typeof req.headers.authorization === 'string';
 
-  onModuleInit() {
-    this.authService = this.client.getService<AuthService>('AuthService');
-  }
+    const hasRefreshToken = !!req.cookies?.refresh_token_id;
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Check for @Public() decorator
-    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
-    if (isPublic) {
-      return true;
+    if (!hasAccessToken && !hasRefreshToken) {
+      throw new UnauthorizedException('No auth credentials');
     }
 
-    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    const token = this.extractTokenFromHeader(request);
-
-    if (!token) {
-      throw new UnauthorizedException('No token provided');
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.authService.validate({ token }),
-      );
-
-      if (!response.valid) {
-        throw new UnauthorizedException('Invalid token');
-      }
-
-      // Attach user to request object
-      request.user = {
-        userId: response.userId,
-      };
-
-      return true;
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    return true;
   }
 }

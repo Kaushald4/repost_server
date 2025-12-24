@@ -7,13 +7,19 @@ import {
 } from '@app/common';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(RepostApigatewayModule, {
     bufferLogs: true,
   });
 
-  app.enableCors();
+  app.use(cookieParser());
+
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  });
   app.setGlobalPrefix('/api/v1');
   app.useLogger(app.get(Logger));
   app.useGlobalFilters(new GrpcExceptionFilter());

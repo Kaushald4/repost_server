@@ -50,4 +50,5 @@ message RefreshRequest {
 message RefreshResponse {
   string accessToken = 1;
   string refreshToken = 2;
+  string refreshTokenId = 3;
 }

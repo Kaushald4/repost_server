@@ -70,7 +70,7 @@ export class ValidateResponse {
 
 export class RefreshRequest {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   refreshToken: string;
 
   @IsString()
@@ -84,4 +84,7 @@ export class RefreshResponse {
 
   @IsString({ message: 'refreshToken must be a string' })
   refreshToken: string;
+
+  @IsString({ message: 'refreshTokenId must be a string' })
+  refreshTokenId: string;
 }

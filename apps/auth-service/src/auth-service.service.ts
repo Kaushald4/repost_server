@@ -161,13 +161,8 @@ export class AuthServiceService {
 
   async refresh(data: RefreshRequest): Promise<RefreshResponse> {
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(
-        data.refreshToken,
-      );
-
-      // Check if token exists in DB and is not expired
       const storedToken = await this.prisma.refreshToken.findUnique({
-        where: { token: data.refreshToken, id: data.refreshTokenId },
+        where: { id: data.refreshTokenId },
       });
 
       if (!storedToken || storedToken.expiresAt < new Date()) {
@@ -177,10 +172,14 @@ export class AuthServiceService {
         });
       }
 
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(
+        storedToken.token,
+      );
+
       // Rotate tokens
       const newPayload: JwtPayload = { sub: payload.sub, email: payload.email };
       const newAccessToken = this.jwtService.sign(newPayload, {
-        expiresIn: 60,
+        expiresIn: 20,
       });
       const newRefreshToken = this.jwtService.sign(newPayload, {
         expiresIn: '7d',
@@ -198,6 +197,7 @@ export class AuthServiceService {
       return {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
+        refreshTokenId: storedToken.id,
       };
     } catch {
       throw new RpcException({
