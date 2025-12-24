@@ -32,7 +32,6 @@ import { LoggerModule } from 'nestjs-pino';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
       }),
       inject: [ConfigService],
     }),

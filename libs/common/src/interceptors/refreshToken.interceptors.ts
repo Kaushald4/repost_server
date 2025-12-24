@@ -82,6 +82,10 @@ export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
         switchMap((result) => {
           console.log(result, 'RESULT');
           if (!result.valid) {
+            if (refreshTokenId) {
+              // Try to refresh the tokens
+              return this._handleRefreshToken(refreshTokenId, req, res, next);
+            }
             throw new UnauthorizedException();
           }
 
@@ -94,53 +98,61 @@ export class RefreshInterceptor implements NestInterceptor, OnModuleInit {
     /**
      * CASE 2: No access token, but refresh token exists → refresh FIRST
      */
-    if (!accessToken && refreshTokenId) {
-      return this.authService.refresh({ refreshTokenId }).pipe(
-        switchMap((refreshed) => {
-          console.log(refreshed, 'refreshednasjansjansjansjasnajsnjansjasnj');
-          // Set cookies using refreshed tokens
-          res.cookie('access_token', refreshed.accessToken, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
-            path: '/',
-          });
-
-          res.cookie('refresh_token_id', refreshed.refreshTokenId, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
-            path: '/',
-          });
-
-          // Validate the NEW access token
-          return this.authService
-            .validate({ token: refreshed.accessToken })
-            .pipe(
-              // carry both values forward
-              switchMap((validated) => {
-                if (!validated.valid) {
-                  throw new UnauthorizedException();
-                }
-
-                return [
-                  {
-                    accessToken: refreshed.accessToken,
-                    userId: validated.userId,
-                  },
-                ];
-              }),
-            );
-        }),
-        switchMap(({ accessToken, userId }) => {
-          req.headers.authorization = `Bearer ${accessToken}`;
-          req.user = { userId };
-
-          return next.handle();
-        }),
-      );
+    if (refreshTokenId) {
+      return this._handleRefreshToken(refreshTokenId, req, res, next);
     }
 
     throw new UnauthorizedException();
+  }
+
+  _handleRefreshToken(
+    refreshTokenId: string,
+    req: AuthenticatedRequest,
+    res: Response,
+    next: CallHandler,
+  ): Observable<any> {
+    return this.authService.refresh({ refreshTokenId }).pipe(
+      switchMap((refreshed) => {
+        // Set cookies using refreshed tokens
+        res.cookie('access_token', refreshed.accessToken, {
+          httpOnly: process.env.COOKIE_HTTP_ONLY === 'true',
+          sameSite: process.env.COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
+          secure: process.env.COOKIE_SECURE === 'true',
+          path: process.env.COOKIE_PATH,
+          maxAge: Number(process.env.COOKIE_EXPIRATION_TIME) * 1000, // 15 minutes
+        });
+
+        res.cookie('refresh_token_id', refreshed.refreshTokenId, {
+          httpOnly: process.env.COOKIE_HTTP_ONLY === 'true',
+          sameSite: process.env.COOKIE_SAME_SITE as 'lax' | 'strict' | 'none',
+          secure: process.env.COOKIE_SECURE === 'true',
+          path: process.env.COOKIE_PATH,
+          maxAge: Number(process.env.REFRESH_COOKIE_EXPIRATION_TIME) * 1000, // 7 days
+        });
+
+        // Validate the NEW access token
+        return this.authService.validate({ token: refreshed.accessToken }).pipe(
+          // carry both values forward
+          switchMap((validated) => {
+            if (!validated.valid) {
+              throw new UnauthorizedException();
+            }
+
+            return [
+              {
+                accessToken: refreshed.accessToken,
+                userId: validated.userId,
+              },
+            ];
+          }),
+        );
+      }),
+      switchMap(({ accessToken, userId }) => {
+        req.headers.authorization = `Bearer ${accessToken}`;
+        req.user = { userId };
+
+        return next.handle();
+      }),
+    );
   }
 }

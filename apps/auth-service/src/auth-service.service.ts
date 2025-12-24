@@ -19,6 +19,7 @@ import {
   RefreshRequest,
   RefreshResponse,
 } from '@app/dto';
+import { ConfigService } from '@nestjs/config';
 
 interface JwtPayload {
   sub: string;
@@ -31,6 +32,7 @@ export class AuthServiceService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private redisService: RedisService,
+    private configService: ConfigService,
   ) {}
 
   async register(data: RegisterRequest): Promise<RegisterResponse> {
@@ -176,13 +178,21 @@ export class AuthServiceService {
         storedToken.token,
       );
 
+      const accessTokenExpiresIn = this.configService.get<string>(
+        'JWT_EXPIRATION_TIME',
+      )! as unknown as number;
+
+      const refreshTokenExpiresIn = this.configService.get<string>(
+        'REFRESH_TOKEN_EXPIRATION_TIME',
+      )! as unknown as number;
+
       // Rotate tokens
       const newPayload: JwtPayload = { sub: payload.sub, email: payload.email };
       const newAccessToken = this.jwtService.sign(newPayload, {
-        expiresIn: 20,
+        expiresIn: Number(accessTokenExpiresIn),
       });
       const newRefreshToken = this.jwtService.sign(newPayload, {
-        expiresIn: '7d',
+        expiresIn: Number(refreshTokenExpiresIn),
       });
 
       // Update stored token
@@ -190,7 +200,9 @@ export class AuthServiceService {
         where: { id: storedToken.id },
         data: {
           token: newRefreshToken,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          expiresAt: new Date(
+            Date.now() + Number(refreshTokenExpiresIn) * 1000,
+          ),
         },
       });
 
