@@ -8,6 +8,7 @@ import {
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(RepostApigatewayModule, {
@@ -15,6 +16,9 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  app.use(bodyParser.json({ limit: '4mb' })); // For JSON bodies
+  app.use(bodyParser.urlencoded({ limit: '4mb', extended: true })); // For form-encoded bodies
 
   app.enableCors({
     origin: ['http://localhost:3000'],

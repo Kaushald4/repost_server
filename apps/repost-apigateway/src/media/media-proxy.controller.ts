@@ -41,6 +41,7 @@ export class MediaProxyController implements OnModuleInit {
     @UploadedFile() file: Express.Multer.File,
     @Body('folder') folder?: string,
   ) {
+    console.log('HELLO');
     return this.mediaService.uploadFile({
       file: file.buffer,
       filename: file.originalname,
