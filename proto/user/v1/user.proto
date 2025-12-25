@@ -31,6 +31,7 @@ message UpdateUserRequest {
 message Media {
   string url = 1;
   string fileId = 2;
+  string action = 3; // "keep", "update", "delete"
 }
 
 message UserSettingsInput {

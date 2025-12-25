@@ -94,7 +94,7 @@ export class UserResponse {
   @ValidateNested()
   @Type(() => MediaDto)
   @IsOptional()
-  avatar?: MediaDto;
+  avatar?: Omit<MediaDto, 'action'>;
 
   @IsString()
   @IsOptional()
@@ -106,7 +106,7 @@ export class UserResponse {
   @ValidateNested()
   @Type(() => MediaDto)
   @IsOptional()
-  banner?: MediaDto;
+  banner?: Omit<MediaDto, 'action'>;
 
   @IsBoolean()
   isPrivate: boolean;

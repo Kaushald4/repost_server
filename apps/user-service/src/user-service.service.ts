@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { UpdateUserRequest } from '@app/dto';
-import { RpcException } from '@nestjs/microservices';
+import { MediaDto, UpdateUserRequest } from '@app/dto';
 import { Prisma } from '../generated/prisma/client';
 
 @Injectable()
@@ -45,7 +44,7 @@ export class UserServiceService {
   }
 
   async updateUser(data: UpdateUserRequest) {
-    const { id, settings, avatar, banner, ...userData } = data;
+    const { id, avatar, banner, settings, ...userData } = data;
 
     if (userData.username) {
       const existing = await this.prisma.user.findUnique({
@@ -58,43 +57,31 @@ export class UserServiceService {
       }
     }
 
+    function mediaToPrisma(media?: MediaDto) {
+      if (!media || media.action === 'keep') return undefined;
+
+      if (media.action === 'delete') {
+        return { delete: true };
+      }
+
+      return {
+        upsert: {
+          create: {
+            fileId: media.fileId,
+            url: media.url,
+          },
+          update: {
+            fileId: media.fileId,
+            url: media.url,
+          },
+        },
+      };
+    }
+
     const updateData: Prisma.UserUpdateInput = {
       ...userData,
-
-      avatar: avatar?.fileId
-        ? {
-            upsert: {
-              create: {
-                url: avatar.url,
-                fileId: avatar.fileId,
-              },
-              update: {
-                url: avatar.url,
-                fileId: avatar.fileId,
-              },
-            },
-          }
-        : avatar
-          ? { delete: true }
-          : undefined,
-
-      banner: banner?.fileId
-        ? {
-            upsert: {
-              create: {
-                url: banner.url,
-                fileId: banner.fileId,
-              },
-              update: {
-                url: banner.url,
-                fileId: banner.fileId,
-              },
-            },
-          }
-        : banner
-          ? { delete: true }
-          : undefined,
-
+      avatar: mediaToPrisma(avatar),
+      banner: mediaToPrisma(banner),
       settings: settings
         ? {
             upsert: {
@@ -108,19 +95,18 @@ export class UserServiceService {
         : undefined,
     };
 
-    try {
-      return await this.prisma.user.update({
-        where: { id },
-        data: updateData,
-        include: {
-          avatar: true,
-          banner: true,
-          settings: true,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-      throw new RpcException('Failed to update user');
-    }
+    Object.keys(updateData).forEach(
+      (k) => updateData[k] === undefined && delete updateData[k],
+    );
+
+    return this.prisma.user.update({
+      where: { id },
+      data: updateData,
+      include: {
+        avatar: true,
+        banner: true,
+        settings: true,
+      },
+    });
   }
 }
