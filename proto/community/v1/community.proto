@@ -1,3 +1,28 @@
 syntax = "proto3";
 
 package community;
+
+
+service CommunityService {
+  rpc CreateCommunity (CreateCommunityRequest) returns (CommunityResponse);
+}
+
+message Media {
+  string url = 1;
+  string fileId = 2;
+  string action = 3; // "keep", "update", "delete"
+}
+
+message CreateCommunityRequest {
+  string name = 1;
+  string title = 2;
+  string description = 3;
+  Media icon = 4;
+  Media banner = 5;
+  string visibility = 6; // "PUBLIC", "RESTRICTED", "PRIVATE"
+  string ownerId = 7;
+}
+
+message CommunityResponse {
+    string message = 1;
+}

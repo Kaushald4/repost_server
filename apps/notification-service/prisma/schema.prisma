@@ -20,14 +20,31 @@ enum NotificationType {
   UPVOTE
   FOLLOW
   CHAT_MESSAGE
+  COMMUNITY_MODERATOR_INVITE
+}
+
+enum NotificationActionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  type      NotificationType
-  entityId  String?
-  message   String?
-  read      Boolean          @default(false)
-  createdAt DateTime         @default(now())
+  id     String           @id @default(cuid())
+  userId String
+  type   NotificationType
+
+  // generic linking
+  entityId String? // communityId, postId, etc.
+  title    String
+  message  String?
+
+  // action support
+  actionStatus NotificationActionStatus?
+  actionData   Json? // flexible payload
+
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

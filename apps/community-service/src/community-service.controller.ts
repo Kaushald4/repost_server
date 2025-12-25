@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { CommunityServiceService } from './community-service.service';
 import { GrpcMethod } from '@nestjs/microservices';
-import { CreateCommunityRequest } from './community.dto';
+import type { CreateCommunityRequestWithOwnerId } from '@app/dto';
 
 @Controller()
 export class CommunityServiceController {
@@ -10,7 +10,7 @@ export class CommunityServiceController {
   ) {}
 
   @GrpcMethod('CommunityService', 'CreateCommunity')
-  createCommunity(data: CreateCommunityRequest) {
-    // return this.communityServiceService.createCommunity(data);
+  createCommunity(data: CreateCommunityRequestWithOwnerId) {
+    return this.communityServiceService.createCommunity(data);
   }
 }
