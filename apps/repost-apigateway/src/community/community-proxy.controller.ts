@@ -3,12 +3,13 @@ import type {
   CreateCommunityRequest,
   CreateCommunityRequestWithOwnerId,
 } from '@app/dto';
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs/internal/Observable';
 
 interface CommunityServiceClient {
   createCommunity(data: CreateCommunityRequestWithOwnerId): Observable<any>;
+  getAllCommunities(): Observable<any>;
 }
 
 @Controller('community')
@@ -31,5 +32,10 @@ export class CommunityProxyController {
       ...data,
       ownerId: user.userId,
     });
+  }
+
+  @Get('all-communities')
+  getAllCommunities(): Observable<any> {
+    return this.svc.getAllCommunities();
   }
 }

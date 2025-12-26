@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package community.v1;
+
+enum CommunityVisibility {
+  COMMUNITY_VISIBILITY_UNSPECIFIED = 0;
+  PUBLIC = 1;
+  RESTRICTED = 2;
+  PRIVATE = 3;
+}
+
+enum CommunityStatus {
+  COMMUNITY_STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  SUSPENDED = 2;
+  ARCHIVED = 3;
+}
+
+enum MediaAction {
+  MEDIA_ACTION_UNSPECIFIED = 0;
+  KEEP = 1;
+  UPDATE = 2;
+  DELETE = 3;
+}

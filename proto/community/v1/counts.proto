@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package community.v1;
+
+message CommunityCounts {
+  int32 members = 1;
+  int32 moderators = 2;
+  int32 followers = 3;
+}

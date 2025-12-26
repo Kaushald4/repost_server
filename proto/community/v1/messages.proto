@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package community.v1;
+
+import "community/v1/enums.proto";
+import "community/v1/media.proto";
+import "community/v1/rules.proto";
+import "community/v1/counts.proto";
+
+message Community {
+  string id = 1;
+  string name = 2;
+  string title = 3;
+  string description = 4;
+
+  CommunityVisibility visibility = 5;
+  CommunityStatus status = 6;
+
+  Media icon = 7;
+  Media banner = 8;
+
+  repeated CommunityRule rules = 9;
+  CommunityCounts counts = 10;
+
+  string createdAt = 11;
+  string updatedAt = 12;
+}
+
+message CommunityResponse {
+  Community community = 1;
+}
+
+message DeleteCommunityResponse {
+  bool success = 1;
+}

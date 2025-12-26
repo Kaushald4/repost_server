@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package community.v1;
+
+import "community/v1/messages.proto";
+
+message GetAllCommunitiesRequest {}
+
+message GetAllCommunitiesResponse {
+  repeated Community data = 1;
+  int32 total = 2;
+}

@@ -13,4 +13,9 @@ export class CommunityServiceController {
   createCommunity(data: CreateCommunityRequestWithOwnerId) {
     return this.communityServiceService.createCommunity(data);
   }
+
+  @GrpcMethod('CommunityService', 'GetAllCommunities')
+  getAllCommunities() {
+    return this.communityServiceService.getAllCommunities();
+  }
 }

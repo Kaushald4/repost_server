@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package community.v1;
+
+import "community/v1/enums.proto";
+import "community/v1/media.proto";
+
+message CreateCommunityRequest {
+  string name = 1;
+  string title = 2;
+  string description = 3;
+
+  CommunityVisibility visibility = 4;
+
+  Media icon = 5;
+  Media banner = 6;
+
+  string ownerId = 7;
+}
+
+message UpdateCommunityRequest {
+  string communityId = 1;
+
+  string title = 2;
+  string description = 3;
+
+  CommunityVisibility visibility = 4;
+
+  Media icon = 5;
+  Media banner = 6;
+}
+
+message DeleteCommunityRequest {
+  string communityId = 1;
+}

@@ -53,7 +53,7 @@ export class CommunityServiceService {
     return community;
   }
 
-  async GetAllCommunities() {
+  async getAllCommunities() {
     const communities = await this.prisma.community.findMany({
       where: {
         visibility: { in: ['PUBLIC', 'RESTRICTED'] },
