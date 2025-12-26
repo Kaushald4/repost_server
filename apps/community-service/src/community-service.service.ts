@@ -63,6 +63,7 @@ export class CommunityServiceService {
       include: {
         icon: true,
         banner: true,
+        rules: true,
         _count: {
           select: {
             members: true,
@@ -73,6 +74,7 @@ export class CommunityServiceService {
       },
     });
 
-    return communities.map(mapCommunityToDto);
+    const data = communities.map(mapCommunityToDto);
+    return { communities: data, total: data.length };
   }
 }
