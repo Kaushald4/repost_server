@@ -39,3 +39,52 @@ export class CreateCommunityRequest {
   @IsEnum(['PUBLIC', 'RESTRICTED', 'PRIVATE'])
   visibility: string;
 }
+
+export interface CommunityListResponse {
+  data: CommunityResponseDto[];
+  total: number;
+}
+
+export interface CommunityResponseDto {
+  id: string;
+  name: string;
+  title: string;
+  description?: string | null;
+
+  visibility: CommunityVisibility;
+  status: CommunityStatus;
+
+  icon?: Omit<MediaDto, 'action'> | null;
+  banner?: Omit<MediaDto, 'action'> | null;
+
+  rules: CommunityRuleDto[];
+
+  counts: CommunityCountsDto;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export enum CommunityVisibility {
+  PUBLIC = 'PUBLIC',
+  RESTRICTED = 'RESTRICTED',
+  PRIVATE = 'PRIVATE',
+}
+
+export enum CommunityStatus {
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export interface CommunityRuleDto {
+  id: string;
+  text: string;
+  order: number;
+}
+
+export interface CommunityCountsDto {
+  members: number;
+  moderators: number;
+  followers: number;
+}

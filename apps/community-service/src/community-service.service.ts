@@ -3,6 +3,7 @@ import { PrismaService } from './prisma.service';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { CreateCommunityRequestWithOwnerId } from '@app/dto';
+import { mapCommunityToDto } from './community.mapper';
 
 @Injectable()
 export class CommunityServiceService {
@@ -50,5 +51,28 @@ export class CommunityServiceService {
     });
 
     return community;
+  }
+
+  async GetAllCommunities() {
+    const communities = await this.prisma.community.findMany({
+      where: {
+        visibility: { in: ['PUBLIC', 'RESTRICTED'] },
+        status: 'ACTIVE',
+        isDeleted: false,
+      },
+      include: {
+        icon: true,
+        banner: true,
+        _count: {
+          select: {
+            members: true,
+            moderators: true,
+            followers: true,
+          },
+        },
+      },
+    });
+
+    return communities.map(mapCommunityToDto);
   }
 }

@@ -2,9 +2,15 @@ syntax = "proto3";
 
 package community;
 
-
+/**
+ * ============================
+ * SERVICE
+ * ============================
+ */
 service CommunityService {
   rpc CreateCommunity (CreateCommunityRequest) returns (CommunityResponse);
+  rpc GetAllCommunities(GetAllCommunitiesRequest)
+      returns (GetAllCommunitiesResponse);
 }
 
 message Media {
@@ -12,6 +18,86 @@ message Media {
   string fileId = 2;
   string action = 3; // "keep", "update", "delete"
 }
+
+
+/**
+ * ============================
+ * ENUMS
+ * ============================
+ */
+
+enum CommunityVisibility {
+  COMMUNITY_VISIBILITY_UNSPECIFIED = 0;
+  PUBLIC = 1;
+  RESTRICTED = 2;
+  PRIVATE = 3;
+}
+
+enum CommunityStatus {
+  COMMUNITY_STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  SUSPENDED = 2;
+  ARCHIVED = 3;
+}
+
+
+
+/**
+ * ============================
+ * RULES
+ * ============================
+ */
+
+message CommunityRule {
+  string id = 1;
+  string text = 2;
+  int32 order = 3;
+}
+
+/**
+ * ============================
+ * COUNTS
+ * ============================
+ */
+
+message CommunityCounts {
+  int32 members = 1;
+  int32 moderators = 2;
+  int32 followers = 3;
+}
+
+/**
+ * ============================
+ * CORE RESPONSE
+ * ============================
+ */
+
+message Community {
+  string id = 1;
+  string name = 2;
+  string title = 3;
+  string description = 4;
+
+  CommunityVisibility visibility = 5;
+  CommunityStatus status = 6;
+
+  Media icon = 7;
+  Media banner = 8;
+
+  repeated CommunityRule rules = 9;
+
+  CommunityCounts counts = 10;
+
+  string createdAt = 11; // ISO 8601
+  string updatedAt = 12;
+}
+
+
+/**
+ * ============================
+ * REQUEST / RESPONSE
+ * ============================
+ */
 
 message CreateCommunityRequest {
   string name = 1;
@@ -22,7 +108,10 @@ message CreateCommunityRequest {
   string visibility = 6; // "PUBLIC", "RESTRICTED", "PRIVATE"
   string ownerId = 7;
 }
+message GetAllCommunitiesRequest {}
+message CommunityResponse{}
 
-message CommunityResponse {
-    string message = 1;
+message GetAllCommunitiesResponse {
+  repeated Community data = 1;
+  int32 total = 2;
 }
