@@ -1,4 +1,4 @@
-import { CurrentUser } from '@app/common';
+import { CurrentUser, Public } from '@app/common';
 import type {
   CreateCommunityRequest,
   CreateCommunityRequestWithOwnerId,
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/internal/Observable';
 
 interface CommunityServiceClient {
   createCommunity(data: CreateCommunityRequestWithOwnerId): Observable<any>;
-  getAllCommunities(): Observable<any>;
+  getAllCommunities(data: any): Observable<any>;
 }
 
 @Controller('community')
@@ -34,8 +34,10 @@ export class CommunityProxyController {
     });
   }
 
+  @Public()
   @Get('all-communities')
   getAllCommunities(): Observable<any> {
-    return this.svc.getAllCommunities();
+    console.log('Proxy community - getAllCommunities called');
+    return this.svc.getAllCommunities({});
   }
 }

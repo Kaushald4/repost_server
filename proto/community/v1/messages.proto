@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package community.v1;
 
-import "community/v1/enums.proto";
-import "community/v1/media.proto";
-import "community/v1/rules.proto";
-import "community/v1/counts.proto";
+import "enums.proto";
+import "media.proto";
+import "rules.proto";
+import "counts.proto";
 
 message Community {
   string id = 1;

@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package community.v1;
 
-import "community/v1/enums.proto";
-import "community/v1/media.proto";
+import "enums.proto";
+import "media.proto";
 
 message CreateCommunityRequest {
   string name = 1;
