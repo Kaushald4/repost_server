@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-export const protobufPackage = "community.v1";
+export const protobufPackage = 'community.v1';
 
 export interface CommunityRule {
   id?: string | undefined;
@@ -14,4 +14,4 @@ export interface CommunityRule {
   order?: number | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
+export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';

@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-export const protobufPackage = "community.v1";
+export const protobufPackage = 'community.v1';
 
 export enum CommunityVisibility {
   COMMUNITY_VISIBILITY_UNSPECIFIED = 0,
@@ -56,4 +56,4 @@ export enum CommunityMemberStatus {
   UNRECOGNIZED = -1,
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
+export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';

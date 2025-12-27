@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-export const protobufPackage = "community.v1";
+export const protobufPackage = 'community.v1';
 
 export interface CommunityCounts {
   members?: number | undefined;
@@ -19,4 +19,4 @@ export interface CommunityInfoCount {
   followers?: number | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
+export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';

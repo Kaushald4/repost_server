@@ -5,10 +5,10 @@
 // source: community/v1/requests.proto
 
 /* eslint-disable */
-import { CommunityVisibility } from "./enums";
-import { Media } from "./media";
+import { CommunityVisibility } from './enums';
+import { Media } from './media';
 
-export const protobufPackage = "community.v1";
+export const protobufPackage = 'community.v1';
 
 export interface CreateCommunityRequest {
   name?: string | undefined;
@@ -43,4 +43,4 @@ export interface CommunityMembershipRequest {
   userId?: string | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
+export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';

@@ -5,18 +5,18 @@
 // source: community/v1/messages.proto
 
 /* eslint-disable */
-import { CommunityInfoCount } from "./counts";
+import { CommunityInfoCount } from './counts';
 import {
   CommunityMemberStatus,
   CommunityModeratorRole,
   CommunityModeratorStatus,
   CommunityStatus,
   CommunityVisibility,
-} from "./enums";
-import { Media } from "./media";
-import { CommunityRule } from "./rules";
+} from './enums';
+import { Media } from './media';
+import { CommunityRule } from './rules';
 
-export const protobufPackage = "community.v1";
+export const protobufPackage = 'community.v1';
 
 export interface Cursor {
   createdAt?: string | undefined;
@@ -91,4 +91,4 @@ export interface CommunityMembershipResponse {
   bannedAt?: string | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
+export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
