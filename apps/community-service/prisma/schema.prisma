@@ -76,6 +76,8 @@ model Community {
   moderators CommunityModerator[]
   rules      CommunityRule[]
   followers  CommunityFollow[]
+
+  @@unique([createdAt, id])
 }
 
 /**

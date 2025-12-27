@@ -36,6 +36,7 @@ message DeleteCommunityRequest {
 
 message CommunityInfoRequest {
   string communityName = 1;
+  string userId = 2;
 }
 
 message CommunityMembershipRequest {

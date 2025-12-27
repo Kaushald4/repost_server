@@ -4,10 +4,19 @@ package community.v1;
 
 import "messages.proto";
 
-message GetAllCommunitiesRequest {}
+
+message Cursor {
+  string createdAt = 1;
+  string id = 2;
+}
+
+message GetAllCommunitiesRequest {
+  int32 limit = 1;
+  optional Cursor cursor = 2;
+}
 
 message GetAllCommunitiesResponse {
   repeated Community communities = 1;
-  int32 total = 2;
+  optional Cursor nextCursor = 2;
 }
 

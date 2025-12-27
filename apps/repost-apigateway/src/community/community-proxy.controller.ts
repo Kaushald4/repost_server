@@ -7,14 +7,24 @@ import type {
   CreateCommunityRequestWithOwnerId,
   GetCommunityMembershipRequestDto,
 } from '@app/dto/community';
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { lastValueFrom, Observable } from 'rxjs';
 
 interface CommunityServiceClient {
   createCommunity(data: CreateCommunityRequestWithOwnerId): Observable<any>;
-  getAllCommunities(data: any): Observable<any>;
+  getAllCommunities(data: {
+    limit?: number;
+    cursor?: { createdAt: string; id: string };
+  }): Observable<any>;
   getCommunityInfo(
     data: CommunityInfoRequestDto,
   ): Observable<CommunityInfoResponseDto>;
@@ -47,9 +57,14 @@ export class CommunityProxyController {
 
   @OptionalAuth()
   @Get('all-communities')
-  getAllCommunities(): Observable<any> {
-    console.log('Proxy community - getAllCommunities called');
-    return this.svc.getAllCommunities({});
+  getAllCommunities(
+    @Query()
+    query: {
+      limit?: number;
+      cursor?: { createdAt: string; id: string };
+    },
+  ): Observable<any> {
+    return this.svc.getAllCommunities(query);
   }
 
   @OptionalAuth()
@@ -59,37 +74,17 @@ export class CommunityProxyController {
     @Param() data: CommunityInfoRequestDto,
   ) {
     const userId = user ? user.userId : null;
-    const community = await lastValueFrom(this.svc.getCommunityInfo(data));
+    const { community, viewerContext: gRpcViewerContext } = await lastValueFrom(
+      this.svc.getCommunityInfo({ ...data, userId: userId ?? undefined }),
+    );
 
-    let viewerContext: Record<string, any> = {
-      isLoggedIn: false,
-      isMember: false,
-      role: null,
-      isOwner: false,
+    const viewerContext = {
+      isLoggedIn: !!userId,
+      isMember: gRpcViewerContext?.isMember ?? false,
+      role: gRpcViewerContext?.moderatorRole ?? null,
+      isOwner: userId === community.ownerId,
     };
 
-    if (user && user.userId) {
-      const membership = await lastValueFrom(
-        this.svc.getCommunityMembership({
-          communityId: community.id,
-          userId: user.userId,
-        }),
-      );
-
-      console.log(membership, 'hello');
-
-      viewerContext = {
-        isLoggedIn: true,
-        isMember: membership && membership.exists,
-        isOwner: userId === community.ownerId,
-        role:
-          userId === community.ownerId
-            ? 'owner'
-            : membership.exists
-              ? 'member'
-              : null,
-      };
-    }
     return { community, viewerContext };
   }
 }

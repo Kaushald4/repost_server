@@ -59,32 +59,40 @@ export class CommunityMembershipResponseDto {
 
 export interface CommunityInfoRequestDto {
   communityName: string;
+  userId?: string;
 }
 
 export interface CommunityInfoResponseDto {
-  id: string;
-  name: string;
-  title: string;
-  description?: string | null;
+  community: {
+    id: string;
+    name: string;
+    title: string;
+    description?: string | null;
 
-  ownerId: string;
+    ownerId: string;
 
-  visibility: CommunityVisibility;
-  status: CommunityStatus;
+    visibility: CommunityVisibility;
+    status: CommunityStatus;
 
-  icon?: Omit<MediaDto, 'action'> | null;
-  banner?: Omit<MediaDto, 'action'> | null;
+    icon?: Omit<MediaDto, 'action'> | null;
+    banner?: Omit<MediaDto, 'action'> | null;
 
-  moderators: CommunityModeratorDto[];
-  rules: CommunityRuleDto[];
+    moderators: CommunityModeratorDto[];
+    rules: CommunityRuleDto[];
 
-  counts: CommunityInfoCountsDto;
+    counts: CommunityInfoCountsDto;
 
-  createdAt: string;
-  updatedAt: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  viewerContext: {
+    isMember: boolean;
+    isModerator: boolean;
+    moderatorRole: 'MODERATOR' | 'OWNER' | null;
+  };
 }
 
-interface CommunityModeratorDto {
+export interface CommunityModeratorDto {
   id: string;
   communityId: string;
   userId: string;

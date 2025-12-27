@@ -19,13 +19,19 @@ export class CommunityServiceController {
   }
 
   @GrpcMethod('CommunityService', 'GetAllCommunities')
-  getAllCommunities() {
-    return this.communityServiceService.getAllCommunities();
+  getAllCommunities(data: {
+    limit?: number;
+    cursor?: { createdAt: string; id: string };
+  }) {
+    return this.communityServiceService.getAllCommunities(data);
   }
 
   @GrpcMethod('CommunityService', 'GetCommunityInfo')
   getCommunityInfo(data: CommunityInfoRequestDto) {
-    return this.communityServiceService.getCommunityByName(data.communityName);
+    return this.communityServiceService.getCommunityByName(
+      data.communityName,
+      data.userId,
+    );
   }
 
   @GrpcMethod('CommunityService', 'GetCommunityMembership')

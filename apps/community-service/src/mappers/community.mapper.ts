@@ -7,7 +7,7 @@ import { CommunityInfoResponseDto } from '@app/dto/community';
 
 export function mapCommunityToDto(
   entity: CommunityInfoWithRelationsAndCounts,
-): CommunityInfoResponseDto {
+): CommunityInfoResponseDto['community'] {
   return {
     id: entity.id,
     name: entity.name,

@@ -5,6 +5,10 @@ import { status } from '@grpc/grpc-js';
 import { CreateCommunityRequestWithOwnerId } from '@app/dto/community';
 import { mapCommunityListToDto } from './mappers/community-list.mapper';
 import { mapCommunityToDto } from './mappers/community.mapper';
+import {
+  CommunityStatus,
+  CommunityVisibility,
+} from '../generated/prisma/client';
 
 @Injectable()
 export class CommunityServiceService {
@@ -54,13 +58,34 @@ export class CommunityServiceService {
     return community;
   }
 
-  async getAllCommunities() {
+  async getAllCommunities(pagination: {
+    limit?: number;
+    cursor?: { createdAt: string; id: string };
+  }) {
+    const { limit = 10, cursor } = pagination;
+
     const communities = await this.prisma.community.findMany({
+      take: limit + 1,
+      skip: cursor ? 1 : 0,
+      cursor: cursor
+        ? {
+            createdAt_id: {
+              createdAt: new Date(cursor.createdAt),
+              id: cursor.id,
+            },
+          }
+        : undefined,
+
       where: {
-        visibility: { in: ['PUBLIC', 'RESTRICTED'] },
-        status: 'ACTIVE',
+        visibility: {
+          in: [CommunityVisibility.PUBLIC, CommunityVisibility.RESTRICTED],
+        },
+        status: CommunityStatus.ACTIVE,
         isDeleted: false,
       },
+
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+
       include: {
         icon: true,
         banner: true,
@@ -75,16 +100,30 @@ export class CommunityServiceService {
       },
     });
 
-    const data = communities.map(mapCommunityListToDto);
-    return { communities: data, total: data.length };
+    let nextCursor: { createdAt: string; id: string } | null = null;
+
+    if (communities.length > limit) {
+      const next = communities.pop()!;
+      nextCursor = {
+        createdAt: next.createdAt.toISOString(),
+        id: next.id,
+      };
+    }
+
+    return {
+      communities: communities.map(mapCommunityListToDto),
+      nextCursor,
+    };
   }
 
-  async getCommunityByName(name: string) {
+  async getCommunityByName(name: string, userId?: string) {
     const community = await this.prisma.community.findFirst({
       where: {
         name,
-        visibility: { in: ['PUBLIC', 'RESTRICTED'] },
-        status: 'ACTIVE',
+        visibility: {
+          in: [CommunityVisibility.PUBLIC, CommunityVisibility.RESTRICTED],
+        },
+        status: CommunityStatus.ACTIVE,
         isDeleted: false,
       },
       include: {
@@ -107,8 +146,40 @@ export class CommunityServiceService {
         message: `Community with name ${name} not found`,
       });
     }
-    console.log(mapCommunityToDto(community), 'as');
-    return mapCommunityToDto(community);
+
+    let viewerContext: Record<string, any> = {
+      isMember: false,
+      isModerator: false,
+      moderatorRole: null,
+    };
+
+    if (userId) {
+      const member = await this.prisma.communityMember.findUnique({
+        where: {
+          communityId_userId: {
+            communityId: community.id,
+            userId,
+          },
+        },
+      });
+
+      const moderator = await this.prisma.communityModerator.findUnique({
+        where: {
+          communityId_userId: {
+            communityId: community.id,
+            userId,
+          },
+        },
+      });
+
+      viewerContext = {
+        isMember: !!member,
+        isModerator: !!moderator,
+        moderatorRole: moderator?.role || null,
+      };
+    }
+
+    return { community: mapCommunityToDto(community), viewerContext };
   }
 
   async getCommunityMemberShip(communityId: string, userId: string) {
