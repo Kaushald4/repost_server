@@ -53,7 +53,7 @@ export class CommunityProxyController {
   ) {
     const userId = user ? user.userId : null;
     const community = await lastValueFrom(this.svc.getCommunityInfo(data));
-    console.log(community, 'Community');
+
     const viewerContext = {
       isLoggedIn: false,
       isMember: false,
