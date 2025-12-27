@@ -37,3 +37,9 @@ enum CommunityModeratorStatus {
   REJECTED = 3;
   REMOVED = 4;
 }
+
+enum CommunityMemberStatus {
+  PENDING = 1;
+  ACTIVE = 2;
+  BANNED = 3;
+}

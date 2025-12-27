@@ -5,6 +5,7 @@ import {
   IsOptional,
   ValidateNested,
   IsEnum,
+  IsBoolean,
 } from 'class-validator';
 import { MediaDto } from '../common/common.dto';
 import {
@@ -12,6 +13,49 @@ import {
   CommunityStatus,
   CommunityVisibility,
 } from './common.dto';
+
+export class GetCommunityMembershipRequestDto {
+  @IsString()
+  @IsNotEmpty()
+  communityId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+}
+
+export class CommunityMembershipResponseDto {
+  @IsBoolean()
+  exists: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  communityId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  joinedAt: string;
+
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsEnum(['PENDING', 'ACTIVE', 'BANNED'])
+  status: string;
+
+  @IsOptional()
+  @IsString()
+  leftAt: string | null;
+
+  @IsOptional()
+  @IsString()
+  bannedAt: string | null;
+}
 
 export interface CommunityInfoRequestDto {
   communityName: string;
@@ -22,6 +66,8 @@ export interface CommunityInfoResponseDto {
   name: string;
   title: string;
   description?: string | null;
+
+  ownerId: string;
 
   visibility: CommunityVisibility;
   status: CommunityStatus;

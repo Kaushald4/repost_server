@@ -21,4 +21,7 @@ service CommunityService {
 
 rpc GetCommunityInfo (CommunityInfoRequest)
     returns (CommunityInfoResponse);
+
+    rpc GetCommunityMembership(CommunityMembershipRequest)
+    returns (CommunityMembershipResponse);
 }

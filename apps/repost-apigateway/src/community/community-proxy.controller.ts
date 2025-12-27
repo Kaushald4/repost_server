@@ -1,19 +1,26 @@
 import { CurrentUser, OptionalAuth } from '@app/common';
 import type {
   CommunityInfoRequestDto,
-  CommunityPageDto,
+  CommunityInfoResponseDto,
+  CommunityMembershipResponseDto,
   CreateCommunityRequest,
   CreateCommunityRequestWithOwnerId,
+  GetCommunityMembershipRequestDto,
 } from '@app/dto/community';
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
-import { from, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 interface CommunityServiceClient {
   createCommunity(data: CreateCommunityRequestWithOwnerId): Observable<any>;
   getAllCommunities(data: any): Observable<any>;
-  getCommunityInfo(data: CommunityInfoRequestDto): Observable<CommunityPageDto>;
+  getCommunityInfo(
+    data: CommunityInfoRequestDto,
+  ): Observable<CommunityInfoResponseDto>;
+  getCommunityMembership(
+    data: GetCommunityMembershipRequestDto,
+  ): Observable<CommunityMembershipResponseDto>;
 }
 
 @Controller('community')
@@ -54,24 +61,35 @@ export class CommunityProxyController {
     const userId = user ? user.userId : null;
     const community = await lastValueFrom(this.svc.getCommunityInfo(data));
 
-    const viewerContext = {
+    let viewerContext: Record<string, any> = {
       isLoggedIn: false,
       isMember: false,
       role: null,
+      isOwner: false,
     };
 
-    // if (user && user.userId) {
-    //   const membership = await this.communityService.getMembership(
-    //     community.id,
-    //     user.id,
-    //   );
+    if (user && user.userId) {
+      const membership = await lastValueFrom(
+        this.svc.getCommunityMembership({
+          communityId: community.id,
+          userId: user.userId,
+        }),
+      );
 
-    //   viewerContext = {
-    //     isLoggedIn: true,
-    //     isMember: !!membership,
-    //     role: membership?.role ?? null,
-    //   };
-    // }
+      console.log(membership, 'hello');
+
+      viewerContext = {
+        isLoggedIn: true,
+        isMember: membership && membership.exists,
+        isOwner: userId === community.ownerId,
+        role:
+          userId === community.ownerId
+            ? 'owner'
+            : membership.exists
+              ? 'member'
+              : null,
+      };
+    }
     return { community, viewerContext };
   }
 }

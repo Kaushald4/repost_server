@@ -71,3 +71,15 @@ message CommunityResponse {
 message DeleteCommunityResponse {
   bool success = 1;
 }
+
+
+message CommunityMembershipResponse {
+  bool exists = 1;
+  optional string communityId = 2;
+  optional string userId = 3;
+  optional string id = 4;
+  optional CommunityMemberStatus status = 5;
+  optional string joinedAt = 6;
+  optional string leftAt = 7;
+  optional string bannedAt = 8;
+}

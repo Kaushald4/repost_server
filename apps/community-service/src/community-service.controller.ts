@@ -4,6 +4,7 @@ import { GrpcMethod } from '@nestjs/microservices';
 import type {
   CommunityInfoRequestDto,
   CreateCommunityRequestWithOwnerId,
+  GetCommunityMembershipRequestDto,
 } from '@app/dto/community';
 
 @Controller()
@@ -25,5 +26,13 @@ export class CommunityServiceController {
   @GrpcMethod('CommunityService', 'GetCommunityInfo')
   getCommunityInfo(data: CommunityInfoRequestDto) {
     return this.communityServiceService.getCommunityByName(data.communityName);
+  }
+
+  @GrpcMethod('CommunityService', 'GetCommunityMembership')
+  getCommunityMembership(data: GetCommunityMembershipRequestDto) {
+    return this.communityServiceService.getCommunityMemberShip(
+      data.communityId,
+      data.userId,
+    );
   }
 }

@@ -13,7 +13,7 @@ export function mapCommunityToDto(
     name: entity.name,
     title: entity.title,
     description: entity.description,
-
+    ownerId: entity.ownerId,
     visibility: mapCommunityVisibility(entity.visibility),
     status: mapCommunityStatus(entity.status),
 

@@ -110,4 +110,20 @@ export class CommunityServiceService {
     console.log(mapCommunityToDto(community), 'as');
     return mapCommunityToDto(community);
   }
+
+  async getCommunityMemberShip(communityId: string, userId: string) {
+    const membership = await this.prisma.communityMember.findFirst({
+      where: {
+        communityId,
+        userId,
+      },
+    });
+
+    if (!membership) {
+      return {
+        exists: false,
+      };
+    }
+    return { ...membership, exists: true };
+  }
 }
