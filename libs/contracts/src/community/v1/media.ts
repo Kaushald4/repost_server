@@ -4,7 +4,6 @@
 //   protoc               v3.19.1
 // source: community/v1/media.proto
 
-/* eslint-disable */
 import { MediaAction } from './enums';
 
 export const protobufPackage = 'community.v1';

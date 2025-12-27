@@ -4,8 +4,6 @@
 //   protoc               v3.19.1
 // source: community/v1/counts.proto
 
-/* eslint-disable */
-
 export const protobufPackage = 'community.v1';
 
 export interface CommunityCounts {

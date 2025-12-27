@@ -4,7 +4,6 @@
 //   protoc               v3.19.1
 // source: community/v1/queries.proto
 
-/* eslint-disable */
 import { CommunitySummary, Cursor } from './messages';
 
 export const protobufPackage = 'community.v1';

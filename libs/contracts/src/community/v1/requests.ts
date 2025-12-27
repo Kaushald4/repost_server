@@ -4,7 +4,6 @@
 //   protoc               v3.19.1
 // source: community/v1/requests.proto
 
-/* eslint-disable */
 import { CommunityVisibility } from './enums';
 import { Media } from './media';
 

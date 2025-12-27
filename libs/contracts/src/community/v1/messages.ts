@@ -4,7 +4,6 @@
 //   protoc               v3.19.1
 // source: community/v1/messages.proto
 
-/* eslint-disable */
 import { CommunityInfoCount } from './counts';
 import {
   CommunityMemberStatus,
