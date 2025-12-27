@@ -5,7 +5,7 @@ package community.v1;
 import "community/v1/enums.proto";
 
 message Media {
-  string url = 1;
-  string fileId = 2;
+  optional string url = 1;
+  optional string fileId = 2;
   MediaAction action = 3;
 }

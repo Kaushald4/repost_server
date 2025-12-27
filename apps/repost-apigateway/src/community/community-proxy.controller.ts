@@ -7,10 +7,7 @@ import type {
   CreateCommunityRequest as CreateCommunityGrpcRequest,
   CommunityInfoRequest,
 } from '@app/contracts/community/v1/requests';
-import type {
-  GetAllCommunitiesRequest,
-  GetAllCommunitiesResponse,
-} from '@app/contracts/community/v1/queries';
+import type { GetAllCommunitiesRequest } from '@app/contracts/community/v1/queries';
 import {
   Body,
   Controller,
@@ -22,6 +19,7 @@ import {
 } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
+import { mapCommunityListToDto } from './mappers/community-list.mapper';
 
 function mapVisibilityToGrpc(value: string): CommunityVisibility {
   switch (value) {
@@ -79,13 +77,13 @@ export class CommunityProxyController {
 
   @OptionalAuth()
   @Get('all-communities')
-  getAllCommunities(
+  async getAllCommunities(
     @Query()
     query: {
       limit?: number | string;
       cursor?: { id: string; createdAt: string };
     },
-  ): Observable<GetAllCommunitiesResponse> {
+  ) {
     const request: GetAllCommunitiesRequest = {
       limit:
         query.limit === undefined
@@ -100,8 +98,10 @@ export class CommunityProxyController {
           }
         : undefined,
     };
-
-    return this.svc.getAllCommunities(request);
+    const mappedList = mapCommunityListToDto(
+      await lastValueFrom(this.svc.getAllCommunities(request)),
+    );
+    return mappedList;
   }
 
   @OptionalAuth()

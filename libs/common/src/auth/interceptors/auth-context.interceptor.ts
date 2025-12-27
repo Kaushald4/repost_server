@@ -40,20 +40,39 @@ export class AuthContextInterceptor implements NestInterceptor {
 
     const { accessToken, refreshTokenId } = extractTokens(req);
 
-    const authContext = await this.resolver.resolve({
-      accessToken,
-      refreshTokenId,
-      optional: !!isOptional,
-    });
+    try {
+      const authContext = await this.resolver.resolve({
+        accessToken,
+        refreshTokenId,
+        optional: !!isOptional,
+      });
 
-    if (authContext.accessToken) {
-      writeAuthCookies(res, authContext.accessToken);
+      if (authContext.accessToken) {
+        writeAuthCookies(res, authContext.accessToken);
+      }
+
+      if (authContext.userId) {
+        req.user = { userId: authContext.userId };
+      }
+
+      return next.handle();
+    } catch (error) {
+      console.log(error);
+      res.clearCookie('access_token', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        path: '/',
+      });
+
+      res.clearCookie('refresh_token_id', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        path: '/',
+      });
+
+      return next.handle();
     }
-
-    if (authContext.userId) {
-      req.user = { userId: authContext.userId };
-    }
-
-    return next.handle();
   }
 }
