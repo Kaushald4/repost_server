@@ -81,7 +81,10 @@ export class CommunityProxyController {
   @Get('all-communities')
   getAllCommunities(
     @Query()
-    query: any,
+    query: {
+      limit?: number | string;
+      cursor?: { id: string; createdAt: string };
+    },
   ): Observable<GetAllCommunitiesResponse> {
     const request: GetAllCommunitiesRequest = {
       limit:
