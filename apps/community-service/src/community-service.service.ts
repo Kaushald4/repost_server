@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
-import { CreateCommunityRequestWithOwnerId } from '@app/dto';
-import { mapCommunityToDto } from './community.mapper';
+import { CreateCommunityRequestWithOwnerId } from '@app/dto/community';
+import { mapCommunityListToDto } from './mappers/community-list.mapper';
+import { mapCommunityToDto } from './mappers/community.mapper';
 
 @Injectable()
 export class CommunityServiceService {
@@ -74,7 +75,39 @@ export class CommunityServiceService {
       },
     });
 
-    const data = communities.map(mapCommunityToDto);
+    const data = communities.map(mapCommunityListToDto);
     return { communities: data, total: data.length };
+  }
+
+  async getCommunityByName(name: string) {
+    const community = await this.prisma.community.findFirst({
+      where: {
+        name,
+        visibility: { in: ['PUBLIC', 'RESTRICTED'] },
+        status: 'ACTIVE',
+        isDeleted: false,
+      },
+      include: {
+        icon: true,
+        banner: true,
+        rules: true,
+        moderators: true,
+        _count: {
+          select: {
+            members: true,
+            followers: true,
+          },
+        },
+      },
+    });
+
+    if (!community) {
+      throw new RpcException({
+        code: status.NOT_FOUND,
+        message: `Community with name ${name} not found`,
+      });
+    }
+    console.log(mapCommunityToDto(community), 'as');
+    return mapCommunityToDto(community);
   }
 }

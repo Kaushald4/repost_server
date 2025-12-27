@@ -18,4 +18,7 @@ service CommunityService {
 
   rpc GetAllCommunities (GetAllCommunitiesRequest)
       returns (GetAllCommunitiesResponse);
+
+rpc GetCommunityInfo (CommunityInfoRequest)
+    returns (CommunityInfoResponse);
 }

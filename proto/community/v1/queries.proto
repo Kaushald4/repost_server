@@ -10,3 +10,4 @@ message GetAllCommunitiesResponse {
   repeated Community communities = 1;
   int32 total = 2;
 }
+

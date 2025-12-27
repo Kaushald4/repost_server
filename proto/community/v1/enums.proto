@@ -22,3 +22,18 @@ enum MediaAction {
   UPDATE = 2;
   DELETE = 3;
 }
+
+
+enum CommunityModeratorRole {
+  COMMUNITY_MODERATOR_ROLE_UNSPECIFIED = 0;
+  MODERATOR = 1;
+  OWNER = 2;
+}
+
+enum CommunityModeratorStatus {
+  COMMUNITY_MODERATOR_STATUS_UNSPECIFIED = 0;
+  INVITED = 1;
+  ACTIVE = 2;
+  REJECTED = 3;
+  REMOVED = 4;
+}

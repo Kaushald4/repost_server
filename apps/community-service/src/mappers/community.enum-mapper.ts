@@ -1,12 +1,12 @@
 import {
   CommunityVisibility as ContractVisibility,
   CommunityStatus as ContractStatus,
-} from '@app/dto';
+} from '@app/dto/community';
 
 import {
   CommunityVisibility as PrismaVisibility,
   CommunityStatus as PrismaStatus,
-} from '../generated/prisma/client';
+} from '../../generated/prisma/client';
 
 export function mapCommunityVisibility(
   visibility: PrismaVisibility,

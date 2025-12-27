@@ -7,3 +7,8 @@ message CommunityCounts {
   int32 moderators = 2;
   int32 followers = 3;
 }
+
+message CommunityInfoCount {
+  int32 members = 1;
+  int32 followers = 3;
+}

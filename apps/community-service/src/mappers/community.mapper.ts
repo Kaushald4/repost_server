@@ -1,13 +1,13 @@
-import { CommunityResponseDto } from '@app/dto';
-import { CommunityWithRelationsAndCounts } from './community.types';
+import { CommunityInfoWithRelationsAndCounts } from '../community.types';
 import {
   mapCommunityStatus,
   mapCommunityVisibility,
 } from './community.enum-mapper';
+import { CommunityInfoResponseDto } from '@app/dto/community';
 
 export function mapCommunityToDto(
-  entity: CommunityWithRelationsAndCounts,
-): CommunityResponseDto {
+  entity: CommunityInfoWithRelationsAndCounts,
+): CommunityInfoResponseDto {
   return {
     id: entity.id,
     name: entity.name,
@@ -30,10 +30,17 @@ export function mapCommunityToDto(
       text: r.text,
       order: r.order,
     })),
-
+    moderators: entity.moderators.map((m) => ({
+      id: m.id,
+      userId: m.userId,
+      communityId: m.communityId,
+      invitedAt: m.invitedAt.toISOString(),
+      respondedAt: m.respondedAt?.toISOString(),
+      role: m.role,
+      status: m.status,
+    })),
     counts: {
       members: entity._count.members,
-      moderators: entity._count.moderators,
       followers: entity._count.followers,
     },
 

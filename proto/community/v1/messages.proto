@@ -26,9 +26,47 @@ message Community {
   string updatedAt = 12;
 }
 
+message Moderator {
+  string id = 1;
+  string userId = 2;
+  string communityId = 3;
+  string invitedAt = 4;
+  string joinedAt = 5;
+  CommunityModeratorRole role = 6;
+}
+
+message CommunityInfoResponse {
+  string id = 1;
+  string name = 2;
+  string title = 3;
+  string description = 4;
+
+  CommunityVisibility visibility = 5;
+  CommunityStatus status = 6;
+
+  Media icon = 7;
+  Media banner = 8;
+
+  
+  repeated CommunityRule rules = 9;
+  CommunityInfoCount counts = 10;
+  
+  string createdAt = 11;
+  string updatedAt = 12;
+  repeated Moderator moderator = 13;
+}
+
+
+message ViewerContext {
+  bool isMember = 1;
+  bool isModerator = 2;
+  CommunityModeratorRole moderatorRole = 3;
+}
+
 message CommunityResponse {
   Community community = 1;
 }
+
 
 message DeleteCommunityResponse {
   bool success = 1;

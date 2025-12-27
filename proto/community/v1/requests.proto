@@ -33,3 +33,7 @@ message UpdateCommunityRequest {
 message DeleteCommunityRequest {
   string communityId = 1;
 }
+
+message CommunityInfoRequest {
+  string communityName = 1;
+}

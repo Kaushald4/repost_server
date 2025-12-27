@@ -14,3 +14,18 @@ export type CommunityWithRelationsAndCounts = Prisma.CommunityGetPayload<{
     };
   };
 }>;
+
+export type CommunityInfoWithRelationsAndCounts = Prisma.CommunityGetPayload<{
+  include: {
+    icon: true;
+    banner: true;
+    rules: true;
+    moderators: true;
+    _count: {
+      select: {
+        members: true;
+        followers: true;
+      };
+    };
+  };
+}>;
