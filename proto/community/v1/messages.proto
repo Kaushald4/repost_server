@@ -2,10 +2,29 @@ syntax = "proto3";
 
 package community.v1;
 
-import "enums.proto";
-import "media.proto";
-import "rules.proto";
-import "counts.proto";
+import "community/v1/enums.proto";
+import "community/v1/media.proto";
+import "community/v1/rules.proto";
+import "community/v1/counts.proto";
+
+message Cursor {
+  string createdAt = 1;
+  string id = 2;
+}
+
+message CommunitySummary {
+  string id = 1;
+  string name = 2;
+  string title = 3;
+
+  Media icon = 4;
+  Media banner = 5;
+
+  CommunityInfoCount counts = 6;
+
+  string createdAt = 7;
+  string updatedAt = 8;
+}
 
 message Community {
   string id = 1;
@@ -13,17 +32,21 @@ message Community {
   string title = 3;
   string description = 4;
 
-  CommunityVisibility visibility = 5;
-  CommunityStatus status = 6;
+  string ownerId = 5;
 
-  Media icon = 7;
-  Media banner = 8;
+  CommunityVisibility visibility = 6;
+  CommunityStatus status = 7;
 
-  repeated CommunityRule rules = 9;
-  CommunityCounts counts = 10;
+  Media icon = 8;
+  Media banner = 9;
 
-  string createdAt = 11;
-  string updatedAt = 12;
+  repeated CommunityRule rules = 10;
+  CommunityInfoCount counts = 11;
+
+  string createdAt = 12;
+  string updatedAt = 13;
+
+  repeated Moderator moderators = 14;
 }
 
 message Moderator {
@@ -31,29 +54,14 @@ message Moderator {
   string userId = 2;
   string communityId = 3;
   string invitedAt = 4;
-  string joinedAt = 5;
+  string respondedAt = 5;
   CommunityModeratorRole role = 6;
+  CommunityModeratorStatus status = 7;
 }
 
-message CommunityInfoResponse {
-  string id = 1;
-  string name = 2;
-  string title = 3;
-  string description = 4;
-
-  CommunityVisibility visibility = 5;
-  CommunityStatus status = 6;
-
-  Media icon = 7;
-  Media banner = 8;
-
-  
-  repeated CommunityRule rules = 9;
-  CommunityInfoCount counts = 10;
-  
-  string createdAt = 11;
-  string updatedAt = 12;
-  repeated Moderator moderator = 13;
+message CommunityPage {
+  Community community = 1;
+  ViewerContext viewerContext = 2;
 }
 
 

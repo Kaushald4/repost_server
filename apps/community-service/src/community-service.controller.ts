@@ -2,10 +2,19 @@ import { Controller } from '@nestjs/common';
 import { CommunityServiceService } from './community-service.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import type {
-  CommunityInfoRequestDto,
-  CreateCommunityRequestWithOwnerId,
-  GetCommunityMembershipRequestDto,
-} from '@app/dto/community';
+  CommunityInfoRequest,
+  CommunityMembershipRequest,
+  CreateCommunityRequest,
+} from '@app/contracts/community/v1/requests';
+import type {
+  GetAllCommunitiesRequest,
+  GetAllCommunitiesResponse,
+} from '@app/contracts/community/v1/queries';
+import type {
+  CommunityMembershipResponse,
+  CommunityPage,
+  CommunityResponse,
+} from '@app/contracts/community/v1/messages';
 
 @Controller()
 export class CommunityServiceController {
@@ -14,31 +23,26 @@ export class CommunityServiceController {
   ) {}
 
   @GrpcMethod('CommunityService', 'CreateCommunity')
-  createCommunity(data: CreateCommunityRequestWithOwnerId) {
+  createCommunity(data: CreateCommunityRequest): Promise<CommunityResponse> {
     return this.communityServiceService.createCommunity(data);
   }
 
   @GrpcMethod('CommunityService', 'GetAllCommunities')
-  getAllCommunities(data: {
-    limit?: number;
-    cursor?: { createdAt: string; id: string };
-  }) {
+  getAllCommunities(
+    data: GetAllCommunitiesRequest,
+  ): Promise<GetAllCommunitiesResponse> {
     return this.communityServiceService.getAllCommunities(data);
   }
 
   @GrpcMethod('CommunityService', 'GetCommunityInfo')
-  getCommunityInfo(data: CommunityInfoRequestDto) {
-    return this.communityServiceService.getCommunityByName(
-      data.communityName,
-      data.userId,
-    );
+  getCommunityInfo(data: CommunityInfoRequest): Promise<CommunityPage> {
+    return this.communityServiceService.getCommunityByName(data);
   }
 
   @GrpcMethod('CommunityService', 'GetCommunityMembership')
-  getCommunityMembership(data: GetCommunityMembershipRequestDto) {
-    return this.communityServiceService.getCommunityMemberShip(
-      data.communityId,
-      data.userId,
-    );
+  getCommunityMembership(
+    data: CommunityMembershipRequest,
+  ): Promise<CommunityMembershipResponse> {
+    return this.communityServiceService.getCommunityMemberShip(data);
   }
 }

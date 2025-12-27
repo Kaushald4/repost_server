@@ -2,9 +2,11 @@ syntax = "proto3";
 
 package community.v1;
 
-import "requests.proto";
-import "messages.proto";
-import "queries.proto";
+import "community/v1/requests.proto";
+import "community/v1/messages.proto";
+import "community/v1/queries.proto";
+
+// NOTE: keep imports root-relative for protoc/ts-proto generation.
 
 service CommunityService {
   rpc CreateCommunity (CreateCommunityRequest)
@@ -19,9 +21,9 @@ service CommunityService {
   rpc GetAllCommunities (GetAllCommunitiesRequest)
       returns (GetAllCommunitiesResponse);
 
-rpc GetCommunityInfo (CommunityInfoRequest)
-    returns (CommunityInfoResponse);
+  rpc GetCommunityInfo (CommunityInfoRequest)
+      returns (CommunityPage);
 
-    rpc GetCommunityMembership(CommunityMembershipRequest)
-    returns (CommunityMembershipResponse);
+  rpc GetCommunityMembership (CommunityMembershipRequest)
+      returns (CommunityMembershipResponse);
 }

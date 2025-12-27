@@ -2,4 +2,4 @@ export * from './auth/auth.dto';
 export * from './user/user.dto';
 export * from './post';
 export * from './common/common.dto';
-export * from './community/community-list.dto';
+export * from './community';

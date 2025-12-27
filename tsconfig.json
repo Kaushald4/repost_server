@@ -14,6 +14,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "ignoreDeprecations": "5.0",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -33,6 +34,12 @@
       ],
       "@app/dto/*": [
         "libs/dto/src/*"
+      ],
+      "@app/contracts": [
+        "libs/contracts/src"
+      ],
+      "@app/contracts/*": [
+        "libs/contracts/src/*"
       ],
       "@repost-api-gateway/*": [
         "apps/repost-api-gateway/src/*"

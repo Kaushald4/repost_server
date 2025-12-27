@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package community.v1;
 
-import "enums.proto";
+import "community/v1/enums.proto";
 
 message Media {
   string url = 1;

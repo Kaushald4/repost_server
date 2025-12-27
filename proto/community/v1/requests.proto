@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package community.v1;
 
-import "enums.proto";
-import "media.proto";
+import "community/v1/enums.proto";
+import "community/v1/media.proto";
 
 message CreateCommunityRequest {
   string name = 1;
@@ -36,7 +36,7 @@ message DeleteCommunityRequest {
 
 message CommunityInfoRequest {
   string communityName = 1;
-  string userId = 2;
+  optional string userId = 2;
 }
 
 message CommunityMembershipRequest {

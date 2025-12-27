@@ -10,5 +10,5 @@ message CommunityCounts {
 
 message CommunityInfoCount {
   int32 members = 1;
-  int32 followers = 3;
+  int32 followers = 2;
 }

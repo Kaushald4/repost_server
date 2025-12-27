@@ -12,6 +12,9 @@ import { join } from 'path';
           package: 'community.v1',
           protoPath: join(process.cwd(), 'proto/community/v1/community.proto'),
           url: '0.0.0.0:8765',
+          loader: {
+            includeDirs: [join(process.cwd(), 'proto')],
+          },
         },
       },
     ]),

@@ -2,13 +2,7 @@ syntax = "proto3";
 
 package community.v1;
 
-import "messages.proto";
-
-
-message Cursor {
-  string createdAt = 1;
-  string id = 2;
-}
+import "community/v1/messages.proto";
 
 message GetAllCommunitiesRequest {
   int32 limit = 1;
@@ -16,7 +10,7 @@ message GetAllCommunitiesRequest {
 }
 
 message GetAllCommunitiesResponse {
-  repeated Community communities = 1;
+  repeated CommunitySummary communities = 1;
   optional Cursor nextCursor = 2;
 }
 

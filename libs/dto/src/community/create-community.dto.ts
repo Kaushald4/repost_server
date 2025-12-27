@@ -8,10 +8,6 @@ import {
 } from 'class-validator';
 import { MediaDto } from '../common/common.dto';
 
-export interface CreateCommunityRequestWithOwnerId extends CreateCommunityRequest {
-  ownerId: string;
-}
-
 export class CreateCommunityRequest {
   @IsString()
   @IsNotEmpty()
