@@ -1,4 +1,4 @@
-import { CurrentUser, Public } from '@app/common';
+import { CurrentUser, OptionalAuth } from '@app/common';
 import type {
   CreateCommunityRequest,
   CreateCommunityRequestWithOwnerId,
@@ -34,7 +34,7 @@ export class CommunityProxyController {
     });
   }
 
-  @Public()
+  @OptionalAuth()
   @Get('all-communities')
   getAllCommunities(): Observable<any> {
     console.log('Proxy community - getAllCommunities called');

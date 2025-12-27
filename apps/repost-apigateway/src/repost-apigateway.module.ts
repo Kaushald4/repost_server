@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RepostApigatewayController } from './repost-apigateway.controller';
 import { RepostApigatewayService } from './repost-apigateway.service';
 import { AuthenticationProxyModule } from './authentication/auth-proxy.module';
 import { UserProxyModule } from './user-service/user-proxy.module';
 import { ConfigModule } from '@nestjs/config';
-import { RedisModule, AuthGuard } from '@app/common';
+import { AuthModule, RedisModule } from '@app/common';
 import { LoggerModule } from 'nestjs-pino';
 import { CommunityProxyModule } from './community/community-proxy.module';
 import { MediaProxyModule } from './media/media.module';
-import { RefreshInterceptor } from '@app/common';
 
 @Module({
   imports: [
@@ -27,11 +25,13 @@ import { RefreshInterceptor } from '@app/common';
               }
             : undefined,
       },
+      forRoutes: ['*path'],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: 'apps/repost-apigateway/.env',
     }),
+    AuthModule,
     AuthenticationProxyModule,
     UserProxyModule,
     RedisModule,
@@ -39,16 +39,6 @@ import { RefreshInterceptor } from '@app/common';
     MediaProxyModule,
   ],
   controllers: [RepostApigatewayController],
-  providers: [
-    RepostApigatewayService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: RefreshInterceptor,
-    },
-  ],
+  providers: [RepostApigatewayService],
 })
 export class RepostApigatewayModule {}

@@ -7,7 +7,7 @@ export class RepostApigatewayController {
     private readonly repostApigatewayService: RepostApigatewayService,
   ) {}
 
-  @Get()
+  @Get('/health')
   getHello(): string {
     return this.repostApigatewayService.getHello();
   }

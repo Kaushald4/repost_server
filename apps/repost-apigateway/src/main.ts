@@ -24,10 +24,11 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
     credentials: true,
   });
-  app.setGlobalPrefix('/api/v1');
+  app.setGlobalPrefix('api/v1');
   app.useLogger(app.get(Logger));
   app.useGlobalFilters(new GrpcExceptionFilter());
   app.useGlobalFilters(new HttpExceptionFilter());
+
   app.useGlobalInterceptors(new ResponseInterceptor<any>());
   app.useGlobalPipes(new ValidationPipe());
 
