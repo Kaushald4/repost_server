@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiResponse } from '../interfaces/api-response.interface';
+import { ApiResponse } from '../contracts/api-response.contracts';
 import { ERROR_MESSAGES } from '../constants/error-messages';
 
 interface GrpcError {

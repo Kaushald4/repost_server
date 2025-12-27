@@ -3,7 +3,7 @@ export * from './redis/redis.service';
 export * from './constants/events';
 export * from './constants/error-messages';
 export * from './constants/success-messages';
-export * from './interfaces/api-response.interface';
+export * from './contracts/api-response.contracts';
 export * from './filters/http-exception.filter';
 export * from './filters/rpc-exception.filter';
 export * from './interceptors/logging.interceptor';
