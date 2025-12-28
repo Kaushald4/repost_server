@@ -4,10 +4,11 @@
 //   protoc               v3.19.1
 // source: community/v1/requests.proto
 
-import { CommunityVisibility } from './enums';
-import { Media } from './media';
+/* eslint-disable */
+import { CommunityVisibility } from "./enums";
+import { Media } from "./media";
 
-export const protobufPackage = 'community.v1';
+export const protobufPackage = "community.v1";
 
 export interface CreateCommunityRequest {
   name?: string | undefined;
@@ -21,6 +22,7 @@ export interface CreateCommunityRequest {
 
 export interface UpdateCommunityRequest {
   communityId?: string | undefined;
+  userId?: string | undefined;
   title?: string | undefined;
   description?: string | undefined;
   visibility?: CommunityVisibility | undefined;
@@ -42,4 +44,4 @@ export interface CommunityMembershipRequest {
   userId?: string | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
+export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

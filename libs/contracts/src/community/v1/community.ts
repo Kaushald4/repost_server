@@ -5,126 +5,80 @@
 // source: community/v1/community.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import {
-  CommunityMembershipResponse,
-  CommunityPage,
-  CommunityResponse,
-  DeleteCommunityResponse,
-} from './messages';
-import { GetAllCommunitiesRequest, GetAllCommunitiesResponse } from './queries';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
+import { CommunityMembershipResponse, CommunityPage, CommunityResponse, DeleteCommunityResponse } from "./messages";
+import { GetAllCommunitiesRequest, GetAllCommunitiesResponse } from "./queries";
 import {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
   DeleteCommunityRequest,
   UpdateCommunityRequest,
-} from './requests';
+} from "./requests";
 
-export const protobufPackage = 'community.v1';
+export const protobufPackage = "community.v1";
 
-export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
+export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
 
 export interface CommunityServiceClient {
-  createCommunity(
-    request: CreateCommunityRequest,
-  ): Observable<CommunityResponse>;
+  createCommunity(request: CreateCommunityRequest): Observable<CommunityResponse>;
 
-  updateCommunity(
-    request: UpdateCommunityRequest,
-  ): Observable<CommunityResponse>;
+  updateCommunity(request: UpdateCommunityRequest): Observable<CommunityResponse>;
 
-  deleteCommunity(
-    request: DeleteCommunityRequest,
-  ): Observable<DeleteCommunityResponse>;
+  deleteCommunity(request: DeleteCommunityRequest): Observable<DeleteCommunityResponse>;
 
-  getAllCommunities(
-    request: GetAllCommunitiesRequest,
-  ): Observable<GetAllCommunitiesResponse>;
+  getAllCommunities(request: GetAllCommunitiesRequest): Observable<GetAllCommunitiesResponse>;
 
   getCommunityInfo(request: CommunityInfoRequest): Observable<CommunityPage>;
 
-  getCommunityMembership(
-    request: CommunityMembershipRequest,
-  ): Observable<CommunityMembershipResponse>;
+  getCommunityMembership(request: CommunityMembershipRequest): Observable<CommunityMembershipResponse>;
 }
 
 export interface CommunityServiceController {
   createCommunity(
     request: CreateCommunityRequest,
-  ):
-    | Promise<CommunityResponse>
-    | Observable<CommunityResponse>
-    | CommunityResponse;
+  ): Promise<CommunityResponse> | Observable<CommunityResponse> | CommunityResponse;
 
   updateCommunity(
     request: UpdateCommunityRequest,
-  ):
-    | Promise<CommunityResponse>
-    | Observable<CommunityResponse>
-    | CommunityResponse;
+  ): Promise<CommunityResponse> | Observable<CommunityResponse> | CommunityResponse;
 
   deleteCommunity(
     request: DeleteCommunityRequest,
-  ):
-    | Promise<DeleteCommunityResponse>
-    | Observable<DeleteCommunityResponse>
-    | DeleteCommunityResponse;
+  ): Promise<DeleteCommunityResponse> | Observable<DeleteCommunityResponse> | DeleteCommunityResponse;
 
   getAllCommunities(
     request: GetAllCommunitiesRequest,
-  ):
-    | Promise<GetAllCommunitiesResponse>
-    | Observable<GetAllCommunitiesResponse>
-    | GetAllCommunitiesResponse;
+  ): Promise<GetAllCommunitiesResponse> | Observable<GetAllCommunitiesResponse> | GetAllCommunitiesResponse;
 
-  getCommunityInfo(
-    request: CommunityInfoRequest,
-  ): Promise<CommunityPage> | Observable<CommunityPage> | CommunityPage;
+  getCommunityInfo(request: CommunityInfoRequest): Promise<CommunityPage> | Observable<CommunityPage> | CommunityPage;
 
   getCommunityMembership(
     request: CommunityMembershipRequest,
-  ):
-    | Promise<CommunityMembershipResponse>
-    | Observable<CommunityMembershipResponse>
-    | CommunityMembershipResponse;
+  ): Promise<CommunityMembershipResponse> | Observable<CommunityMembershipResponse> | CommunityMembershipResponse;
 }
 
 export function CommunityServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      'createCommunity',
-      'updateCommunity',
-      'deleteCommunity',
-      'getAllCommunities',
-      'getCommunityInfo',
-      'getCommunityMembership',
+      "createCommunity",
+      "updateCommunity",
+      "deleteCommunity",
+      "getAllCommunities",
+      "getCommunityInfo",
+      "getCommunityMembership",
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('CommunityService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("CommunityService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('CommunityService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("CommunityService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const COMMUNITY_SERVICE_NAME = 'CommunityService';
+export const COMMUNITY_SERVICE_NAME = "CommunityService";

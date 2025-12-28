@@ -13,10 +13,12 @@ import {
   CommunityStatus,
   CommunityVisibility,
 } from '../generated/prisma/enums';
+import { MediaAction } from '@app/contracts/community/v1/enums';
 import type {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
+  UpdateCommunityRequest,
 } from '@app/contracts/community/v1/requests';
 import type {
   CommunityMembershipResponse,
@@ -82,6 +84,129 @@ export class CommunityServiceService {
             },
           }),
       },
+      include: {
+        icon: true,
+        banner: true,
+        rules: true,
+        moderators: true,
+        _count: {
+          select: {
+            members: true,
+            followers: true,
+          },
+        },
+      },
+    });
+
+    return { community: mapCommunityToDto(community) };
+  }
+
+  async updateCommunity(
+    data: UpdateCommunityRequest,
+  ): Promise<CommunityResponse> {
+    if (!data.communityId || !data.userId) {
+      throw new RpcException({
+        code: status.INVALID_ARGUMENT,
+        message: 'communityId and userId are required',
+      });
+    }
+
+    const existing = await this.prisma.community.findUnique({
+      where: { id: data.communityId },
+      select: { id: true, ownerId: true },
+    });
+
+    if (!existing) {
+      throw new RpcException({
+        code: status.NOT_FOUND,
+        message: `Community with id ${data.communityId} not found`,
+      });
+    }
+
+    if (existing.ownerId !== data.userId) {
+      throw new RpcException({
+        code: status.PERMISSION_DENIED,
+        message: 'Only the owner can update the community',
+      });
+    }
+
+    const updateData: Record<any, unknown> = {};
+
+    if (data.title !== undefined) {
+      updateData.title = data.title;
+    }
+
+    if (data.description !== undefined) {
+      updateData.description = data.description;
+    }
+
+    if (data.visibility !== undefined) {
+      updateData.visibility = mapCommunityVisibilityFromContract(
+        data.visibility,
+      );
+    }
+
+    if (data.icon) {
+      switch (data.icon.action) {
+        case MediaAction.MEDIA_ACTION_UPDATE:
+          if (data.icon.url && data.icon.fileId) {
+            updateData.icon = {
+              upsert: {
+                create: {
+                  url: data.icon.url,
+                  fileId: data.icon.fileId,
+                },
+                update: {
+                  url: data.icon.url,
+                  fileId: data.icon.fileId,
+                },
+              },
+            };
+          }
+          break;
+        case MediaAction.MEDIA_ACTION_DELETE:
+          updateData.icon = {
+            delete: true,
+          };
+          break;
+        case MediaAction.MEDIA_ACTION_KEEP:
+          // Do nothing
+          break;
+      }
+    }
+
+    if (data.banner) {
+      switch (data.banner.action) {
+        case MediaAction.MEDIA_ACTION_UPDATE:
+          if (data.banner.url && data.banner.fileId) {
+            updateData.banner = {
+              upsert: {
+                create: {
+                  url: data.banner.url,
+                  fileId: data.banner.fileId,
+                },
+                update: {
+                  url: data.banner.url,
+                  fileId: data.banner.fileId,
+                },
+              },
+            };
+          }
+          break;
+        case MediaAction.MEDIA_ACTION_DELETE:
+          updateData.banner = {
+            delete: true,
+          };
+          break;
+        case MediaAction.MEDIA_ACTION_KEEP:
+          // Do nothing
+          break;
+      }
+    }
+
+    const community = await this.prisma.community.update({
+      where: { id: data.communityId },
+      data: updateData,
       include: {
         icon: true,
         banner: true,

@@ -4,9 +4,10 @@
 //   protoc               v3.19.1
 // source: community/v1/media.proto
 
-import { MediaAction } from './enums';
+/* eslint-disable */
+import { MediaAction } from "./enums";
 
-export const protobufPackage = 'community.v1';
+export const protobufPackage = "community.v1";
 
 export interface Media {
   url?: string | undefined;
@@ -14,4 +15,4 @@ export interface Media {
   action?: MediaAction | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
+export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

@@ -20,14 +20,15 @@ message CreateCommunityRequest {
 
 message UpdateCommunityRequest {
   string communityId = 1;
+  string userId = 2;
 
-  string title = 2;
-  string description = 3;
+  string title = 3;
+  string description = 4;
 
-  CommunityVisibility visibility = 4;
+  CommunityVisibility visibility = 5;
 
-  Media icon = 5;
-  Media banner = 6;
+  Media icon = 6;
+  Media banner = 7;
 }
 
 message DeleteCommunityRequest {

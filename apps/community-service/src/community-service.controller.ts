@@ -5,6 +5,7 @@ import type {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
+  UpdateCommunityRequest,
 } from '@app/contracts/community/v1/requests';
 import type {
   GetAllCommunitiesRequest,
@@ -25,6 +26,11 @@ export class CommunityServiceController {
   @GrpcMethod('CommunityService', 'CreateCommunity')
   createCommunity(data: CreateCommunityRequest): Promise<CommunityResponse> {
     return this.communityServiceService.createCommunity(data);
+  }
+
+  @GrpcMethod('CommunityService', 'UpdateCommunity')
+  updateCommunity(data: UpdateCommunityRequest): Promise<CommunityResponse> {
+    return this.communityServiceService.updateCommunity(data);
   }
 
   @GrpcMethod('CommunityService', 'GetAllCommunities')

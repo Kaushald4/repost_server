@@ -4,9 +4,10 @@
 //   protoc               v3.19.1
 // source: community/v1/queries.proto
 
-import { CommunitySummary, Cursor } from './messages';
+/* eslint-disable */
+import { CommunitySummary, Cursor } from "./messages";
 
-export const protobufPackage = 'community.v1';
+export const protobufPackage = "community.v1";
 
 export interface GetAllCommunitiesRequest {
   limit?: number | undefined;
@@ -18,4 +19,4 @@ export interface GetAllCommunitiesResponse {
   nextCursor?: Cursor | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
+export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

@@ -4,7 +4,9 @@
 //   protoc               v3.19.1
 // source: community/v1/rules.proto
 
-export const protobufPackage = 'community.v1';
+/* eslint-disable */
+
+export const protobufPackage = "community.v1";
 
 export interface CommunityRule {
   id?: string | undefined;
@@ -12,4 +14,4 @@ export interface CommunityRule {
   order?: number | undefined;
 }
 
-export const COMMUNITY_V1_PACKAGE_NAME = 'community.v1';
+export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";
