@@ -1,7 +1,6 @@
 import {
   Catch,
   RpcExceptionFilter,
-  ArgumentsHost,
   Logger,
   HttpException,
   HttpStatus,
@@ -21,7 +20,7 @@ interface RpcErrorObject {
 export class GrpcExceptionFilter implements RpcExceptionFilter<unknown> {
   private readonly logger = new Logger(GrpcExceptionFilter.name);
 
-  catch(exception: unknown, _host: ArgumentsHost): Observable<any> {
+  catch(exception: unknown): Observable<any> {
     let error: unknown;
 
     if (exception instanceof RpcException) {

@@ -26,7 +26,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     stream: string,
     event: Record<string, any>,
   ): Promise<void> {
-    const eventData = Object.entries(event).flat();
+    const entries = Object.entries(event);
+    const eventData: (string | number)[] = [];
+    for (const [key, value] of entries) {
+      eventData.push(key, String(value));
+    }
     await this.client.xadd(stream, '*', ...eventData);
   }
 

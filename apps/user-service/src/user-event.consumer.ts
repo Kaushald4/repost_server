@@ -32,15 +32,15 @@ export class UserEventConsumer implements OnModuleInit, OnModuleDestroy {
         'MKSTREAM',
       );
       console.log('Consumer group created');
-    } catch (error: any) {
-      if (error.message.includes('BUSYGROUP')) {
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('BUSYGROUP')) {
         console.log('Consumer group already exists');
       } else {
         console.error('Error creating consumer group:', error);
       }
     }
 
-    this.startConsuming();
+    void this.startConsuming();
   }
 
   onModuleDestroy() {
@@ -82,7 +82,7 @@ export class UserEventConsumer implements OnModuleInit, OnModuleDestroy {
         }
       } catch (error) {
         console.error('Error consuming messages:', error);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        void new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
   }
