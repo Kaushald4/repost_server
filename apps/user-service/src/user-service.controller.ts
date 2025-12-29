@@ -21,10 +21,20 @@ export class UserServiceController {
       id: user.id,
       username: user.username,
       displayName: user.displayName || '',
-      avatar: user.avatar ?? { fileId: null, url: null },
+      avatar: user.avatar
+        ? {
+            fileId: user.avatar.fileId ?? undefined,
+            url: user.avatar.url ?? undefined,
+          }
+        : undefined,
       bio: user.bio || '',
       email: user.email,
-      banner: user.banner ?? { fileId: null, url: null },
+      banner: user.banner
+        ? {
+            fileId: user.banner.fileId ?? undefined,
+            url: user.banner.url ?? undefined,
+          }
+        : undefined,
       isPrivate: user.isPrivate,
       createdAt: user.createdAt.toISOString(),
       karma: user.karma,
@@ -56,10 +66,20 @@ export class UserServiceController {
       id: user.id,
       username: user.username,
       displayName: user.displayName || '',
-      avatar: user.avatar ?? { fileId: null, url: null },
+      avatar: user.avatar
+        ? {
+            fileId: user.avatar.fileId ?? undefined,
+            url: user.avatar.url ?? undefined,
+          }
+        : undefined,
       bio: user.bio || '',
       email: user.email,
-      banner: user.banner ?? { fileId: null, url: null },
+      banner: user.banner
+        ? {
+            fileId: user.banner.fileId ?? undefined,
+            url: user.banner.url ?? undefined,
+          }
+        : undefined,
       isPrivate: user.isPrivate,
       createdAt: user.createdAt.toISOString(),
       karma: user.karma,

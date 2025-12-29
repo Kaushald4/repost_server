@@ -6,20 +6,7 @@ import {
   ValidateNested,
   IsEnum,
 } from 'class-validator';
-
-class MediaDto {
-  @IsString()
-  @IsOptional()
-  url?: string;
-
-  @IsString()
-  @IsOptional()
-  fileId?: string;
-
-  @IsString()
-  @IsEnum(['keep', 'update', 'delete'])
-  action: string;
-}
+import { MediaDto } from '../common/common.dto';
 
 export class CreateCommunityRequest {
   @IsString()
