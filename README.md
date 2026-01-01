@@ -105,8 +105,8 @@ npm run start:dev auth-service
 
 ### 🏘️ Community Service (`community-service`)
 
-- [ ] Create Community
-- [ ] Get Community Details
+- [x] Create Community
+- [x] Get Community Details
 - [ ] Join/Leave Community
 - [ ] List Communities (Discovery)
 - [ ] Update Community Settings (Rules, Banners, Icons)
