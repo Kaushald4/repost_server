@@ -44,6 +44,22 @@ enum CommunityModeratorStatus {
   REMOVED
 }
 
+enum CommunityMemberHistoryReason {
+  JOINED
+  LEFT_VOLUNTARILY
+  REMOVED_BY_MODERATOR
+  BANNED
+  AUTO_EXPIRED
+}
+
+enum CommunityModeratorHistoryAction {
+  INVITED
+  ACCEPTED
+  REJECTED
+  REMOVED
+  ROLE_CHANGED
+}
+
 /**
  * ============================
  * CORE MODELS
@@ -120,11 +136,37 @@ model CommunityMember {
   status   CommunityMemberStatus @default(ACTIVE)
   joinedAt DateTime              @default(now())
   leftAt   DateTime?
-  bannedAt DateTime?
+
+  bannedUntil DateTime?
+  bannedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([communityId, userId])
   @@index([communityId])
   @@index([userId])
+}
+
+/**
+ * ============================
+ * MEMBER HISTORY
+ * ============================
+ */
+model CommunityMemberHistory {
+  id String @id @default(cuid())
+
+  communityId String
+  userId      String
+
+  joinedAt DateTime
+  leftAt   DateTime?
+
+  reason CommunityMemberHistoryReason?
+
+  createdAt DateTime @default(now())
+
+  @@index([communityId, userId])
 }
 
 /**
@@ -148,6 +190,23 @@ model CommunityModerator {
   respondedAt DateTime?
 
   @@unique([communityId, userId])
+}
+
+/**
+ * ============================
+ * MODERATOR HISTORY
+ * ============================
+ */
+model CommunityModeratorHistory {
+  id String @id @default(cuid())
+
+  communityId String
+  userId      String
+
+  role   CommunityModeratorRole
+  action CommunityModeratorHistoryAction
+
+  createdAt DateTime @default(now())
 }
 
 /**
