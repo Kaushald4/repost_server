@@ -21,6 +21,6 @@ export const mapCommunityListToDto = (
 
   return {
     ...communities,
-    communities: mappedCommunities,
+    communities: mappedCommunities ?? [],
   };
 };

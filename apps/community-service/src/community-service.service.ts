@@ -255,7 +255,6 @@ export class CommunityServiceService {
         },
       },
     });
-
     const data = communities.map(mapCommunityListToDto);
     const last = communities.at(-1);
 
