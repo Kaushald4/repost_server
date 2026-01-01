@@ -1,10 +1,10 @@
 import { Module, Global } from '@nestjs/common';
-import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
+import { APP_GUARD, Reflector } from '@nestjs/core';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 import { AuthContextResolver } from './resolver/auth-context.resolver';
-import { AuthContextInterceptor } from './interceptors/auth-context.interceptor';
+import { AuthGuard } from './guards/auth.guard';
 
 @Global()
 @Module({
@@ -23,13 +23,13 @@ import { AuthContextInterceptor } from './interceptors/auth-context.interceptor'
   ],
   providers: [
     AuthContextResolver,
-    AuthContextInterceptor,
+    AuthGuard,
     Reflector,
     {
-      provide: APP_INTERCEPTOR,
-      useClass: AuthContextInterceptor,
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
-  exports: [AuthContextResolver, AuthContextInterceptor],
+  exports: [AuthContextResolver, AuthGuard],
 })
 export class AuthModule {}

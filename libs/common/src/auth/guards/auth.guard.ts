@@ -1,9 +1,4 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request, Response } from 'express';
 import { AuthContextResolver } from '../resolver/auth-context.resolver';
@@ -13,13 +8,13 @@ import { OPTIONAL_AUTH_KEY } from '../decorators/optional-auth.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
-export class AuthContextInterceptor implements NestInterceptor {
+export class AuthGuard implements CanActivate {
   constructor(
     private readonly resolver: AuthContextResolver,
     private readonly reflector: Reflector,
   ) {}
 
-  async intercept(context: ExecutionContext, next: CallHandler) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const http = context.switchToHttp();
     const req = http.getRequest<Request & { user?: any }>();
     const res = http.getResponse<Response>();
@@ -30,7 +25,7 @@ export class AuthContextInterceptor implements NestInterceptor {
     ]);
 
     if (isPublic) {
-      return next.handle();
+      return true;
     }
 
     const isOptional = this.reflector.getAllAndOverride<boolean>(
@@ -55,9 +50,10 @@ export class AuthContextInterceptor implements NestInterceptor {
         req.user = { userId: authContext.userId };
       }
 
-      return next.handle();
+      return true;
     } catch (error) {
       console.log(error);
+      // Clear cookies on failure
       res.clearCookie('access_token', {
         httpOnly: true,
         sameSite: 'lax',
@@ -72,7 +68,7 @@ export class AuthContextInterceptor implements NestInterceptor {
         path: '/',
       });
 
-      return next.handle();
+      return true;
     }
   }
 }
