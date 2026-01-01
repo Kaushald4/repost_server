@@ -16,6 +16,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       username: this.configService.get<string>('REDIS_USERNAME', ''),
       maxRetriesPerRequest: null,
     });
+
+    this.client.on('error', (err) => {
+      console.error('Redis error:', err);
+    });
   }
 
   async onModuleDestroy() {
