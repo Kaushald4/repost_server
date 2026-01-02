@@ -91,3 +91,8 @@ message CommunityMembershipResponse {
   optional string leftAt = 7;
   optional string bannedAt = 8;
 }
+
+
+message JoinCommunityResponse {
+  bool success = 1;
+}

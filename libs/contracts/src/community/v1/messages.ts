@@ -91,4 +91,8 @@ export interface CommunityMembershipResponse {
   bannedAt?: string | undefined;
 }
 
+export interface JoinCommunityResponse {
+  success?: boolean | undefined;
+}
+
 export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

@@ -7,13 +7,20 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { CommunityMembershipResponse, CommunityPage, CommunityResponse, DeleteCommunityResponse } from "./messages";
+import {
+  CommunityMembershipResponse,
+  CommunityPage,
+  CommunityResponse,
+  DeleteCommunityResponse,
+  JoinCommunityResponse,
+} from "./messages";
 import { GetAllCommunitiesRequest, GetAllCommunitiesResponse } from "./queries";
 import {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
   DeleteCommunityRequest,
+  JoinCommunityRequest,
   UpdateCommunityRequest,
 } from "./requests";
 
@@ -33,6 +40,8 @@ export interface CommunityServiceClient {
   getCommunityInfo(request: CommunityInfoRequest): Observable<CommunityPage>;
 
   getCommunityMembership(request: CommunityMembershipRequest): Observable<CommunityMembershipResponse>;
+
+  joinCommunity(request: JoinCommunityRequest): Observable<JoinCommunityResponse>;
 }
 
 export interface CommunityServiceController {
@@ -57,6 +66,10 @@ export interface CommunityServiceController {
   getCommunityMembership(
     request: CommunityMembershipRequest,
   ): Promise<CommunityMembershipResponse> | Observable<CommunityMembershipResponse> | CommunityMembershipResponse;
+
+  joinCommunity(
+    request: JoinCommunityRequest,
+  ): Promise<JoinCommunityResponse> | Observable<JoinCommunityResponse> | JoinCommunityResponse;
 }
 
 export function CommunityServiceControllerMethods() {
@@ -68,6 +81,7 @@ export function CommunityServiceControllerMethods() {
       "getAllCommunities",
       "getCommunityInfo",
       "getCommunityMembership",
+      "joinCommunity",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

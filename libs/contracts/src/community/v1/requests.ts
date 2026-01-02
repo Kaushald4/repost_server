@@ -44,4 +44,9 @@ export interface CommunityMembershipRequest {
   userId?: string | undefined;
 }
 
+export interface JoinCommunityRequest {
+  communityId?: string | undefined;
+  userId?: string | undefined;
+}
+
 export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

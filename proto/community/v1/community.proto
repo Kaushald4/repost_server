@@ -26,4 +26,7 @@ service CommunityService {
 
   rpc GetCommunityMembership (CommunityMembershipRequest)
       returns (CommunityMembershipResponse);
+
+    rpc JoinCommunity (JoinCommunityRequest)
+      returns (JoinCommunityResponse);
 }
