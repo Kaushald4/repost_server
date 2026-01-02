@@ -1,6 +1,7 @@
-import { CurrentUser, OptionalAuth } from '@app/common';
+import { CurrentUser, OptionalAuth, RequiredAuthGuard } from '@app/common';
 import {
   CreateCommunityRequest as CreateCommunityBodyDto,
+  JoinCommunityDto,
   UpdateCommunityRequest as UpdateCommunityBodyDto,
 } from '@app/dto/community';
 import {
@@ -24,6 +25,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
@@ -196,5 +198,20 @@ export class CommunityProxyController {
     };
 
     return { community, viewerContext };
+  }
+
+  @UseGuards(RequiredAuthGuard)
+  @Post('join/:communityId')
+  joinCommunity(
+    @CurrentUser() user: { userId: string },
+    @Param('communityId') communityId: string,
+    @Body() data: JoinCommunityDto,
+  ): Observable<any> {
+    console.log(communityId);
+    const request = {
+      communityId: communityId,
+      userId: user.userId,
+    };
+    return this.svc.joinCommunity(request);
   }
 }

@@ -5,6 +5,7 @@ import type {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
+  JoinCommunityRequest,
   UpdateCommunityRequest,
 } from '@app/contracts/community/v1/requests';
 import type {
@@ -15,6 +16,7 @@ import type {
   CommunityMembershipResponse,
   CommunityPage,
   CommunityResponse,
+  JoinCommunityResponse,
 } from '@app/contracts/community/v1/messages';
 
 @Controller()
@@ -50,5 +52,10 @@ export class CommunityServiceController {
     data: CommunityMembershipRequest,
   ): Promise<CommunityMembershipResponse> {
     return this.communityServiceService.getCommunityMemberShip(data);
+  }
+
+  @GrpcMethod('CommunityService', 'JoinCommunity')
+  joinCommunity(data: JoinCommunityRequest): Promise<JoinCommunityResponse> {
+    return this.communityServiceService.joinCommunity(data);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
@@ -10,6 +14,7 @@ import {
   mapCommunityVisibilityFromContract,
 } from './mappers/community.enum-mapper';
 import {
+  CommunityMemberStatus,
   CommunityStatus,
   CommunityVisibility,
 } from '../generated/prisma/enums';
@@ -18,12 +23,14 @@ import type {
   CommunityInfoRequest,
   CommunityMembershipRequest,
   CreateCommunityRequest,
+  JoinCommunityRequest,
   UpdateCommunityRequest,
 } from '@app/contracts/community/v1/requests';
 import type {
   CommunityMembershipResponse,
   CommunityPage,
   CommunityResponse,
+  JoinCommunityResponse,
 } from '@app/contracts/community/v1/messages';
 import type {
   GetAllCommunitiesRequest,
@@ -384,5 +391,81 @@ export class CommunityServiceService {
       leftAt: membership.leftAt?.toISOString(),
       bannedAt: membership.bannedAt?.toISOString(),
     };
+  }
+
+  async joinCommunity(
+    data: JoinCommunityRequest,
+  ): Promise<JoinCommunityResponse> {
+    console.log(data, 'community');
+    const community = await this.prisma.community.findUnique({
+      where: { id: data.communityId },
+    });
+
+    if (!community || community.isDeleted) {
+      throw new NotFoundException('Community not found');
+    }
+
+    // Check existing membership
+    const existing = await this.prisma.communityMember.findUnique({
+      where: {
+        communityId_userId: {
+          communityId: data.communityId!,
+          userId: data.userId!,
+        },
+      },
+    });
+
+    if (existing?.status === CommunityMemberStatus.BANNED) {
+      if (!existing.bannedUntil || existing.bannedUntil > new Date()) {
+        throw new ForbiddenException('You are banned');
+      }
+    }
+
+    if (community.visibility === CommunityVisibility.PRIVATE) {
+      throw new ForbiddenException('Private community – invite required');
+    }
+
+    const now = new Date();
+
+    return this.prisma.$transaction(async (tx) => {
+      let status: CommunityMemberStatus = CommunityMemberStatus.ACTIVE;
+
+      if (community.visibility === CommunityVisibility.RESTRICTED) {
+        status = CommunityMemberStatus.PENDING;
+      }
+
+      await tx.communityMember.upsert({
+        where: {
+          communityId_userId: {
+            communityId: data.communityId!,
+            userId: data.userId!,
+          },
+        },
+        update: {
+          status,
+          joinedAt: now,
+          leftAt: null,
+          bannedAt: null,
+          bannedUntil: null,
+        },
+        create: {
+          communityId: data.communityId!,
+          userId: data.userId!,
+          status,
+          joinedAt: now,
+        },
+      });
+
+      await tx.communityMemberHistory.create({
+        data: {
+          communityId: data.communityId!,
+          userId: data.userId!,
+          joinedAt: now,
+          reason: 'JOINED',
+        },
+      });
+
+      return { success: true };
+    });
   }
 }
