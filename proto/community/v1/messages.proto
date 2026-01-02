@@ -65,15 +65,27 @@ message CommunityPage {
 }
 
 message ViewerContext {
-  bool                   is_member        = 1;
-  bool                   is_moderator     = 2;
-  bool                   is_authenticated = 3;
-  bool                   is_banned        = 4;
-  bool                   can_join         = 5;
-  bool                   can_request_join = 6;
-  string                 banned_until     = 7;
-  CommunityModeratorRole moderator_role   = 8;
-  CommunityMemberStatus  member_status    = 9;
+  bool             is_authenticated  = 1;
+  Membership       membership        = 2;
+  Role             role              = 3;
+  CommunityContext community_context = 4;
+}
+
+message Membership {
+  bool                  is_member     = 1;
+  CommunityMemberStatus member_status = 2;
+  bool                  is_banned     = 3;
+  string                banned_until  = 4;
+}
+
+message Role {
+  bool                   is_owner       = 1;
+  bool                   is_moderator   = 2;
+  CommunityModeratorRole moderator_role = 3;
+}
+
+message CommunityContext {
+  CommunityVisibility visibility = 1;
 }
 
 message CommunityResponse {

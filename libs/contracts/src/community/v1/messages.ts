@@ -67,15 +67,27 @@ export interface CommunityPage {
 }
 
 export interface ViewerContext {
-  isMember?: boolean | undefined;
-  isModerator?: boolean | undefined;
   isAuthenticated?: boolean | undefined;
-  isBanned?: boolean | undefined;
-  canJoin?: boolean | undefined;
-  canRequestJoin?: boolean | undefined;
-  bannedUntil?: string | undefined;
-  moderatorRole?: CommunityModeratorRole | undefined;
+  membership?: Membership | undefined;
+  role?: Role | undefined;
+  communityContext?: CommunityContext | undefined;
+}
+
+export interface Membership {
+  isMember?: boolean | undefined;
   memberStatus?: CommunityMemberStatus | undefined;
+  isBanned?: boolean | undefined;
+  bannedUntil?: string | undefined;
+}
+
+export interface Role {
+  isOwner?: boolean | undefined;
+  isModerator?: boolean | undefined;
+  moderatorRole?: CommunityModeratorRole | undefined;
+}
+
+export interface CommunityContext {
+  visibility?: CommunityVisibility | undefined;
 }
 
 export interface CommunityResponse {

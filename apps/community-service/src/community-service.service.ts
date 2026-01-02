@@ -11,6 +11,7 @@ import { mapCommunityToDto } from './mappers/community.mapper';
 import {
   mapCommunityMemberStatus,
   mapCommunityModeratorRole,
+  mapCommunityVisibility,
   mapCommunityVisibilityFromContract,
 } from './mappers/community.enum-mapper';
 import {
@@ -321,22 +322,33 @@ export class CommunityServiceService {
       });
     }
 
+    // -------------------------
+    // BASE VIEWER CONTEXT
+    // -------------------------
     const viewerContext: NonNullable<CommunityPage['viewerContext']> = {
       isAuthenticated: !!userId,
 
-      isMember: false,
-      memberStatus: undefined,
+      membership: {
+        isMember: false,
+        memberStatus: undefined,
+        isBanned: false,
+        bannedUntil: undefined,
+      },
 
-      isBanned: false,
-      bannedUntil: undefined,
+      role: {
+        isOwner: false,
+        isModerator: false,
+        moderatorRole: undefined,
+      },
 
-      canJoin: false,
-      canRequestJoin: false,
-
-      isModerator: false,
-      moderatorRole: undefined,
+      communityContext: {
+        visibility: mapCommunityVisibility(community.visibility),
+      },
     };
 
+    // -------------------------
+    // USER-SPECIFIC CONTEXT
+    // -------------------------
     if (userId) {
       const [member, moderator] = await Promise.all([
         this.prisma.communityMember.findUnique({
@@ -359,60 +371,49 @@ export class CommunityServiceService {
 
       /**
        * =========================
-       * MEMBER CONTEXT
+       * MEMBERSHIP FACTS
        * =========================
        */
       if (member) {
-        viewerContext.memberStatus = mapCommunityMemberStatus(member.status);
+        viewerContext.membership!.memberStatus = mapCommunityMemberStatus(
+          member.status,
+        );
+        viewerContext.membership!.isMember =
+          member.status === CommunityMemberStatus.ACTIVE;
 
-        if (member.status === 'ACTIVE') {
-          viewerContext.isMember = true;
-        }
-
-        if (member.status === 'BANNED') {
+        if (member.status === CommunityMemberStatus.BANNED) {
           const now = new Date();
           const stillBanned = !member.bannedUntil || member.bannedUntil > now;
 
           if (stillBanned) {
-            viewerContext.isBanned = true;
-            viewerContext.bannedUntil = member.bannedUntil?.toISOString();
+            viewerContext.membership!.isBanned = true;
+            viewerContext.membership!.bannedUntil =
+              member.bannedUntil?.toISOString();
           }
         }
       }
 
       /**
        * =========================
-       * MODERATOR CONTEXT
+       * MODERATOR FACTS
        * =========================
        */
       if (moderator && moderator.status === 'ACTIVE') {
-        viewerContext.isModerator = true;
-        viewerContext.moderatorRole = mapCommunityModeratorRole(moderator.role);
-      }
+        viewerContext.role!.isModerator = true;
+        viewerContext.role!.moderatorRole = mapCommunityModeratorRole(
+          moderator.role,
+        );
 
-      /**
-       * =========================
-       * JOIN PERMISSIONS
-       * =========================
-       */
-      if (!viewerContext.isBanned && !viewerContext.isMember) {
-        switch (community.visibility) {
-          case CommunityVisibility.PUBLIC:
-            viewerContext.canJoin = true;
-            break;
-
-          case CommunityVisibility.RESTRICTED:
-            viewerContext.canRequestJoin = true;
-            break;
-
-          case CommunityVisibility.PRIVATE:
-            // invite-only
-            break;
+        if (moderator.role === 'OWNER') {
+          viewerContext.role!.isOwner = true;
         }
       }
     }
 
-    return { community: mapCommunityToDto(community), viewerContext };
+    return {
+      community: mapCommunityToDto(community),
+      viewerContext,
+    };
   }
 
   async getCommunityMemberShip(
