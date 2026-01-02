@@ -96,3 +96,7 @@ message CommunityMembershipResponse {
 message JoinCommunityResponse {
   bool success = 1;
 }
+
+message LeaveCommunityResponse {
+  bool success = 1;
+}

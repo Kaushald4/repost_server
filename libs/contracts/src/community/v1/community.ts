@@ -13,6 +13,7 @@ import {
   CommunityResponse,
   DeleteCommunityResponse,
   JoinCommunityResponse,
+  LeaveCommunityResponse,
 } from "./messages";
 import { GetAllCommunitiesRequest, GetAllCommunitiesResponse } from "./queries";
 import {
@@ -21,6 +22,7 @@ import {
   CreateCommunityRequest,
   DeleteCommunityRequest,
   JoinCommunityRequest,
+  LeaveCommunityRequest,
   UpdateCommunityRequest,
 } from "./requests";
 
@@ -42,6 +44,8 @@ export interface CommunityServiceClient {
   getCommunityMembership(request: CommunityMembershipRequest): Observable<CommunityMembershipResponse>;
 
   joinCommunity(request: JoinCommunityRequest): Observable<JoinCommunityResponse>;
+
+  leaveCommunity(request: LeaveCommunityRequest): Observable<LeaveCommunityResponse>;
 }
 
 export interface CommunityServiceController {
@@ -70,6 +74,10 @@ export interface CommunityServiceController {
   joinCommunity(
     request: JoinCommunityRequest,
   ): Promise<JoinCommunityResponse> | Observable<JoinCommunityResponse> | JoinCommunityResponse;
+
+  leaveCommunity(
+    request: LeaveCommunityRequest,
+  ): Promise<LeaveCommunityResponse> | Observable<LeaveCommunityResponse> | LeaveCommunityResponse;
 }
 
 export function CommunityServiceControllerMethods() {
@@ -82,6 +90,7 @@ export function CommunityServiceControllerMethods() {
       "getCommunityInfo",
       "getCommunityMembership",
       "joinCommunity",
+      "leaveCommunity",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

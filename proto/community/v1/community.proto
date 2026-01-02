@@ -29,4 +29,7 @@ service CommunityService {
 
     rpc JoinCommunity (JoinCommunityRequest)
       returns (JoinCommunityResponse);
+
+    rpc LeaveCommunity (LeaveCommunityRequest)
+      returns (LeaveCommunityResponse);
 }

@@ -50,3 +50,8 @@ message JoinCommunityRequest {
   string communityId = 1; 
   string userId = 2;
 }
+
+message LeaveCommunityRequest {
+  string communityId = 1; 
+  string userId = 2;
+}

@@ -19,6 +19,7 @@ import type { GetAllCommunitiesRequest } from '@app/contracts/community/v1/queri
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -213,5 +214,18 @@ export class CommunityProxyController {
       userId: user.userId,
     };
     return this.svc.joinCommunity(request);
+  }
+
+  @UseGuards(RequiredAuthGuard)
+  @Delete('leave/:communityId')
+  leaveCommunity(
+    @CurrentUser() user: { userId: string },
+    @Param('communityId') communityId: string,
+  ): Observable<any> {
+    const request = {
+      communityId: communityId,
+      userId: user.userId,
+    };
+    return this.svc.leaveCommunity(request);
   }
 }

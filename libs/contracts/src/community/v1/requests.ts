@@ -49,4 +49,9 @@ export interface JoinCommunityRequest {
   userId?: string | undefined;
 }
 
+export interface LeaveCommunityRequest {
+  communityId?: string | undefined;
+  userId?: string | undefined;
+}
+
 export const COMMUNITY_V1_PACKAGE_NAME = "community.v1";

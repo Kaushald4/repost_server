@@ -30,6 +30,7 @@ enum CommunityMemberStatus {
   PENDING
   ACTIVE
   BANNED
+  LEFT
 }
 
 enum CommunityModeratorRole {

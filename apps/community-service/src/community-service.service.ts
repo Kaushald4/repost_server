@@ -24,6 +24,7 @@ import type {
   CommunityMembershipRequest,
   CreateCommunityRequest,
   JoinCommunityRequest,
+  LeaveCommunityRequest,
   UpdateCommunityRequest,
 } from '@app/contracts/community/v1/requests';
 import type {
@@ -31,6 +32,7 @@ import type {
   CommunityPage,
   CommunityResponse,
   JoinCommunityResponse,
+  LeaveCommunityResponse,
 } from '@app/contracts/community/v1/messages';
 import type {
   GetAllCommunitiesRequest,
@@ -462,6 +464,70 @@ export class CommunityServiceService {
           userId: data.userId!,
           joinedAt: now,
           reason: 'JOINED',
+        },
+      });
+
+      return { success: true };
+    });
+  }
+
+  /**
+   * =========================
+   * LEAVE COMMUNITY
+   * =========================
+   */
+  async leaveCommunity(
+    data: LeaveCommunityRequest,
+  ): Promise<LeaveCommunityResponse> {
+    const communityId = data.communityId!;
+    const userId = data.userId!;
+
+    const member = await this.prisma.communityMember.findUnique({
+      where: {
+        communityId_userId: { communityId, userId },
+      },
+    });
+
+    if (!member || member.status !== 'ACTIVE') {
+      throw new RpcException('Not an active member');
+    }
+
+    const isOwner =
+      (await this.prisma.communityModerator.findFirst({
+        where: {
+          communityId,
+          userId,
+          role: 'OWNER',
+          status: 'ACTIVE',
+        },
+      })) !== null;
+
+    if (isOwner) {
+      throw new ForbiddenException('Owner cannot leave community');
+    }
+
+    const now = new Date();
+
+    return this.prisma.$transaction(async (tx) => {
+      await tx.communityMember.update({
+        where: {
+          communityId_userId: { communityId, userId },
+        },
+        data: {
+          status: CommunityMemberStatus.LEFT,
+          leftAt: now,
+        },
+      });
+
+      await tx.communityMemberHistory.updateMany({
+        where: {
+          communityId,
+          userId,
+          leftAt: null,
+        },
+        data: {
+          leftAt: now,
+          reason: 'LEFT_VOLUNTARILY',
         },
       });
 
