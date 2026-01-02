@@ -9,15 +9,15 @@ import "community/v1/counts.proto";
 
 message Cursor {
   string createdAt = 1;
-  string id = 2;
+  string id        = 2;
 }
 
 message CommunitySummary {
-  string id = 1;
-  string name = 2;
+  string id    = 1;
+  string name  = 2;
   string title = 3;
 
-  Media icon = 4;
+  Media icon   = 4;
   Media banner = 5;
 
   CommunityInfoCount counts = 6;
@@ -27,21 +27,21 @@ message CommunitySummary {
 }
 
 message Community {
-  string id = 1;
-  string name = 2;
-  string title = 3;
+  string id          = 1;
+  string name        = 2;
+  string title       = 3;
   string description = 4;
 
   string ownerId = 5;
 
   CommunityVisibility visibility = 6;
-  CommunityStatus status = 7;
+  CommunityStatus     status     = 7;
 
-  Media icon = 8;
+  Media icon   = 8;
   Media banner = 9;
 
-  repeated CommunityRule rules = 10;
-  CommunityInfoCount counts = 11;
+  repeated CommunityRule rules  = 10;
+  CommunityInfoCount     counts = 11;
 
   string createdAt = 12;
   string updatedAt = 13;
@@ -50,48 +50,50 @@ message Community {
 }
 
 message Moderator {
-  string id = 1;
-  string userId = 2;
-  string communityId = 3;
-  string invitedAt = 4;
-  string respondedAt = 5;
-  CommunityModeratorRole role = 6;
-  CommunityModeratorStatus status = 7;
+  string                   id          = 1;
+  string                   userId      = 2;
+  string                   communityId = 3;
+  string                   invitedAt   = 4;
+  string                   respondedAt = 5;
+  CommunityModeratorRole   role        = 6;
+  CommunityModeratorStatus status      = 7;
 }
 
 message CommunityPage {
-  Community community = 1;
+  Community     community     = 1;
   ViewerContext viewerContext = 2;
 }
 
-
 message ViewerContext {
-  bool isMember = 1;
-  bool isModerator = 2;
-  CommunityModeratorRole moderatorRole = 3;
+  bool                   is_member        = 1;
+  bool                   is_moderator     = 2;
+  bool                   is_authenticated = 3;
+  bool                   is_banned        = 4;
+  bool                   can_join         = 5;
+  bool                   can_request_join = 6;
+  string                 banned_until     = 7;
+  CommunityModeratorRole moderator_role   = 8;
+  CommunityMemberStatus  member_status    = 9;
 }
 
 message CommunityResponse {
   Community community = 1;
 }
 
-
 message DeleteCommunityResponse {
   bool success = 1;
 }
 
-
 message CommunityMembershipResponse {
-  bool exists = 1;
-  optional string communityId = 2;
-  optional string userId = 3;
-  optional string id = 4;
-  optional CommunityMemberStatus status = 5;
-  optional string joinedAt = 6;
-  optional string leftAt = 7;
-  optional string bannedAt = 8;
+  bool                           exists      = 1;
+  optional string                communityId = 2;
+  optional string                userId      = 3;
+  optional string                id          = 4;
+  optional CommunityMemberStatus status      = 5;
+  optional string                joinedAt    = 6;
+  optional string                leftAt      = 7;
+  optional string                bannedAt    = 8;
 }
-
 
 message JoinCommunityResponse {
   bool success = 1;

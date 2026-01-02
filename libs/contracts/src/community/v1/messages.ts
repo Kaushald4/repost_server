@@ -69,7 +69,13 @@ export interface CommunityPage {
 export interface ViewerContext {
   isMember?: boolean | undefined;
   isModerator?: boolean | undefined;
+  isAuthenticated?: boolean | undefined;
+  isBanned?: boolean | undefined;
+  canJoin?: boolean | undefined;
+  canRequestJoin?: boolean | undefined;
+  bannedUntil?: string | undefined;
   moderatorRole?: CommunityModeratorRole | undefined;
+  memberStatus?: CommunityMemberStatus | undefined;
 }
 
 export interface CommunityResponse {

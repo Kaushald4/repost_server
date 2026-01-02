@@ -174,29 +174,29 @@ export class CommunityProxyController {
       userId,
     };
 
-    const { community, viewerContext: gRpcViewerContext } = await lastValueFrom(
+    const { community, viewerContext } = await lastValueFrom(
       this.svc.getCommunityInfo(request),
     );
 
-    const isMember = gRpcViewerContext?.isMember ?? false;
-    const isModerator = gRpcViewerContext?.isModerator ?? false;
-    const isOwner =
-      !!userId && !!community?.ownerId && userId === community.ownerId;
+    // const isMember = gRpcViewerContext?.isMember ?? false;
+    // const isModerator = gRpcViewerContext?.isModerator ?? false;
+    // const isOwner =
+    //   !!userId && !!community?.ownerId && userId === community.ownerId;
 
-    const role = isOwner
-      ? 'OWNER'
-      : isModerator
-        ? 'MODERATOR'
-        : isMember
-          ? 'MEMBER'
-          : null;
+    // const role = isOwner
+    //   ? 'OWNER'
+    //   : isModerator
+    //     ? 'MODERATOR'
+    //     : isMember
+    //       ? 'MEMBER'
+    //       : null;
 
-    const viewerContext = {
-      isLoggedIn: !!userId,
-      isMember,
-      role,
-      isOwner,
-    };
+    // const viewerContext = {
+    //   isLoggedIn: !!userId,
+    //   isMember,
+    //   role,
+    //   isOwner,
+    // };
 
     return { community, viewerContext };
   }

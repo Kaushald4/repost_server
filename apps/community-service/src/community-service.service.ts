@@ -322,7 +322,17 @@ export class CommunityServiceService {
     }
 
     const viewerContext: NonNullable<CommunityPage['viewerContext']> = {
+      isAuthenticated: !!userId,
+
       isMember: false,
+      memberStatus: undefined,
+
+      isBanned: false,
+      bannedUntil: undefined,
+
+      canJoin: false,
+      canRequestJoin: false,
+
       isModerator: false,
       moderatorRole: undefined,
     };
@@ -347,11 +357,59 @@ export class CommunityServiceService {
         }),
       ]);
 
-      viewerContext.isMember = !!member;
-      viewerContext.isModerator = !!moderator;
-      viewerContext.moderatorRole = moderator
-        ? mapCommunityModeratorRole(moderator.role)
-        : undefined;
+      /**
+       * =========================
+       * MEMBER CONTEXT
+       * =========================
+       */
+      if (member) {
+        viewerContext.memberStatus = mapCommunityMemberStatus(member.status);
+
+        if (member.status === 'ACTIVE') {
+          viewerContext.isMember = true;
+        }
+
+        if (member.status === 'BANNED') {
+          const now = new Date();
+          const stillBanned = !member.bannedUntil || member.bannedUntil > now;
+
+          if (stillBanned) {
+            viewerContext.isBanned = true;
+            viewerContext.bannedUntil = member.bannedUntil?.toISOString();
+          }
+        }
+      }
+
+      /**
+       * =========================
+       * MODERATOR CONTEXT
+       * =========================
+       */
+      if (moderator && moderator.status === 'ACTIVE') {
+        viewerContext.isModerator = true;
+        viewerContext.moderatorRole = mapCommunityModeratorRole(moderator.role);
+      }
+
+      /**
+       * =========================
+       * JOIN PERMISSIONS
+       * =========================
+       */
+      if (!viewerContext.isBanned && !viewerContext.isMember) {
+        switch (community.visibility) {
+          case CommunityVisibility.PUBLIC:
+            viewerContext.canJoin = true;
+            break;
+
+          case CommunityVisibility.RESTRICTED:
+            viewerContext.canRequestJoin = true;
+            break;
+
+          case CommunityVisibility.PRIVATE:
+            // invite-only
+            break;
+        }
+      }
     }
 
     return { community: mapCommunityToDto(community), viewerContext };
